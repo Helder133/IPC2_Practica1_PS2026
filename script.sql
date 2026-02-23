@@ -1,0 +1,4 @@
+CREATE DATABASE Practica1 DEFAULT CHARACTER SET = 'utf8mb4';
+
+USE Practica1;
+
