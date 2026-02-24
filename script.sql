@@ -1,4 +1,4 @@
-CREATE DATABASE Practica1 DEFAULT CHARACTER SET = 'utf8mb4';
+CREATE DATABASE IF NOT EXISTS Practica1 DEFAULT CHARACTER SET = 'utf8mb4';
 
 USE Practica1;
 
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS usuario (
     contrasena VARCHAR(250) NOT NULL ,
     rol ENUM ('JUGADOR', 'ADMIN_TIENDA', 'SUPER_ADMIN') DEFAULT 'JUGADOR',
     estado BOOL NOT NULL DEFAULT 1,
-    CONSTRAINT fk_sucursal1 FOREIGN KEY (sucursal_id) REFERENCES sucursal (sucursal_id)
+    CONSTRAINT fk_sucursal1 FOREIGN KEY (sucursal_id) REFERENCES sucursal (sucursal_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS partida (
@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS partida (
     puntaje INT NOT NULL DEFAULT 0 ,
     fecha_inicio DATETIME NOT NULL ,
     fecha_fin DATETIME ,
-    CONSTRAINT fk_sucursal2 FOREIGN KEY (sucursal_id) REFERENCES sucursal (sucursal_id),
-    CONSTRAINT fk_usuario1 FOREIGN KEY (usuario_id) REFERENCES usuario (usuario_id)
+    CONSTRAINT fk_sucursal2 FOREIGN KEY (sucursal_id) REFERENCES sucursal (sucursal_id) ON DELETE RESTRICT ON UPDATE CASCADE ,
+    CONSTRAINT fk_usuario1 FOREIGN KEY (usuario_id) REFERENCES usuario (usuario_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS ingrediente (
@@ -46,32 +46,26 @@ CREATE TABLE IF NOT EXISTS producto (
 CREATE TABLE IF NOT EXISTS producto_ingrediente (
     producto_id INT NOT NULL ,
     ingrediente_id INT NOT NULL ,
-    CONSTRAINT fk_producto1 FOREIGN KEY (producto_id) REFERENCES producto (producto_id),
-    CONSTRAINT fk_ingrediente1 FOREIGN KEY (ingrediente_id) REFERENCES ingrediente (ingrediente_id),
+    CONSTRAINT fk_producto1 FOREIGN KEY (producto_id) REFERENCES producto (producto_id) ON DELETE CASCADE ON UPDATE CASCADE ,
+    CONSTRAINT fk_ingrediente1 FOREIGN KEY (ingrediente_id) REFERENCES ingrediente (ingrediente_id) ON DELETE CASCADE ON UPDATE CASCADE ,
     CONSTRAINT pk_producto_ingrediente PRIMARY KEY (producto_id, ingrediente_id)
 );
 
-CREATE TABLE IF NOT EXISTS menu (
-    menu_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL ,
+CREATE TABLE IF NOT EXISTS sucursal_producto (
     sucursal_id INT NOT NULL ,
-    CONSTRAINT fk_sucursal3 FOREIGN KEY (sucursal_id) REFERENCES sucursal (sucursal_id)
-);
-
-CREATE TABLE IF NOT EXISTS menu_producto (
-    menu_id INT NOT NULL ,
     producto_id INT NOT NULL ,
     estado BOOL NOT NULL DEFAULT 1,
-    CONSTRAINT fk_menu FOREIGN KEY (menu_id) REFERENCES menu (menu_id),
-    CONSTRAINT fk_producto2 FOREIGN KEY (producto_id) REFERENCES producto (producto_id),
-    CONSTRAINT pk_menu_producto PRIMARY KEY (menu_id, producto_id)
+    CONSTRAINT fk_sucursal3 FOREIGN KEY (sucursal_id) REFERENCES sucursal (sucursal_id) ON DELETE RESTRICT ON UPDATE CASCADE ,
+    CONSTRAINT fk_producto2 FOREIGN KEY (producto_id) REFERENCES producto (producto_id) ON DELETE RESTRICT ON UPDATE CASCADE ,
+    CONSTRAINT pk_menu_producto PRIMARY KEY (sucursal_id, producto_id)
 );
 
 CREATE TABLE IF NOT EXISTS sucursal_ingrediente (
     sucursal_id INT NOT NULL ,
     ingrediente_id INT NOT NULL ,
     estado BOOL DEFAULT 1,
-    CONSTRAINT fk_sucursal4 FOREIGN KEY (sucursal_id) REFERENCES sucursal (sucursal_id),
-    CONSTRAINT fk_ingrediente2 FOREIGN KEY (ingrediente_id) REFERENCES ingrediente (ingrediente_id),
+    CONSTRAINT fk_sucursal4 FOREIGN KEY (sucursal_id) REFERENCES sucursal (sucursal_id) ON DELETE RESTRICT ON UPDATE CASCADE ,
+    CONSTRAINT fk_ingrediente2 FOREIGN KEY (ingrediente_id) REFERENCES ingrediente (ingrediente_id) ON DELETE RESTRICT ON UPDATE CASCADE ,
     CONSTRAINT pk_sucursal_ingrediente PRIMARY KEY (sucursal_id, ingrediente_id)
 );
 
@@ -83,15 +77,15 @@ CREATE TABLE IF NOT EXISTS pedido (
     fecha_entrega DATETIME ,
     estado ENUM ('Recibido','Preparando','En_Horno','Lista/Entregado','Cancelado','No_Entregado') NOT NULL DEFAULT 'Recibido',
     puntaje_obtenido INT DEFAULT 0,
-    CONSTRAINT fk_partida1 FOREIGN KEY (partida_id) REFERENCES partida (partida_id)
+    CONSTRAINT fk_partida1 FOREIGN KEY (partida_id) REFERENCES partida (partida_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS detalle_pedido (
     pedido_id INT NOT NULL ,
     producto_id INT NOT NULL ,
     cantidad INT NOT NULL DEFAULT 1 ,
-    CONSTRAINT fk_pedido1 FOREIGN KEY (pedido_id) REFERENCES pedido (pedido_id),
-    CONSTRAINT fk_producto3 FOREIGN KEY (producto_id) REFERENCES producto (producto_id),
+    CONSTRAINT fk_pedido1 FOREIGN KEY (pedido_id) REFERENCES pedido (pedido_id)  ON DELETE CASCADE ON UPDATE CASCADE ,
+    CONSTRAINT fk_producto3 FOREIGN KEY (producto_id) REFERENCES producto (producto_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT pk_detalle_pedido PRIMARY KEY (pedido_id, producto_id)
 );
 
@@ -100,7 +94,7 @@ CREATE TABLE IF NOT EXISTS historial_pedido (
     pedido_id INT NOT NULL ,
     fecha DATETIME NOT NULL ,
     estado ENUM ('Recibido','Preparando','En_Horno','Lista/Entregado','Cancelado','No_Entregado') NOT NULL DEFAULT 'Recibido',
-    CONSTRAINT fk_pedido2 FOREIGN KEY (pedido_id) REFERENCES pedido (pedido_id)
+    CONSTRAINT fk_pedido2 FOREIGN KEY (pedido_id) REFERENCES pedido (pedido_id) ON DELETE CASCADE  ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS configuracion_sistema (
