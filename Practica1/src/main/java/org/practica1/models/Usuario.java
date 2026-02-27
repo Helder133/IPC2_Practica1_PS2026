@@ -14,7 +14,8 @@ public class Usuario {
     private EnumUsuario rol;
     private boolean estado;
 
-    public Usuario(String nombre, String email, String contrasena, EnumUsuario rol) {
+    public Usuario(int sucursal_id,String nombre, String email, String contrasena, EnumUsuario rol) {
+        this.sucursal_id = sucursal_id;
         this.nombre = nombre;
         this.email = email;
         this.contrasena = incriptar(contrasena);
