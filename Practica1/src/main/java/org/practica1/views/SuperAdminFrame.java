@@ -5,24 +5,36 @@ import org.practica1.models.Sucursal;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.util.List;
 
 public class SuperAdminFrame extends JFrame {
 
+    // Variables que sirven para la creacion y modificacion de una sucursal.
     private JTextField txtNombreSucursal;
     private JTextField txtContactoSucursal;
     private JTextField txtUbicacionSucursal;
     private JButton btnGuardarSucursal;
     private JButton btnEliminarSucursal;
     private JButton btnLimpiarSucursal;
-
     private JTable tablaSucursales;
     private DefaultTableModel modeloSucursales;
+
+    // Variables que sirven para la ceracion y modificacion de un usuario.
+    private JTextField txtNombreUsuario;
+    private JTextField txtEmailUsuario;
+    private JPasswordField txtContrasenaUsuario;
+    private JComboBox<String> cbxRolUsuario;
+    private JComboBox<Sucursal> cbxSucursalUsuario;
+    private JButton btnGuardarUsuario;
+    private JButton btnEliminarUsuario;
+    private JButton btnLimpiarUsuario;
+    private JTable tablaUsuario;
+    private DefaultTableModel modeloUsuario;
 
     private Font titulo = new Font("Arial", Font.BOLD, 18);
     private Font principal = new Font("Helvetica", Font.BOLD, 14);
     private Font secundario = new Font("Helvetica", Font.PLAIN, 13);
+    private Color textColor = Color.LIGHT_GRAY;
 
     public SuperAdminFrame() {
         setTitle("Pizza Express Tycoon - Panel de Super Administrador");
@@ -40,19 +52,18 @@ public class SuperAdminFrame extends JFrame {
         JPanel panelSucursal = crearPanelSucursal();
         tabbedPane.addTab("Gestion de sucursales", null, panelSucursal, "Administrar las tiendas");
 
-        JPanel panelUsuarios = new JPanel();
+        JPanel panelUsuarios = crearPanelUsuarios();
         panelUsuarios.setBackground(new Color(30, 30, 30));
         tabbedPane.addTab("Gestión de Usuarios", null, panelUsuarios, "Administrar empleados y jugadores");
 
         add(tabbedPane);
     }
 
+    // Toda la parte de la vista que esta relacionado con sucursal
     private JPanel crearPanelSucursal() {
         JPanel panel = new JPanel();
         panel.setLayout(null);
         panel.setBackground(new Color(30, 30, 30));
-
-        Color textColor = Color.LIGHT_GRAY;
 
         JLabel lblTitulo = new JLabel("Datos de la sucursal");
         lblTitulo.setFont(titulo);
@@ -151,6 +162,14 @@ public class SuperAdminFrame extends JFrame {
         return txtUbicacionSucursal.getText().trim();
     }
 
+    public JButton getBtnGuardarSucursal() {
+        return btnGuardarSucursal;
+    }
+
+    public JButton getBtnEliminarSucursal() {
+        return btnEliminarSucursal;
+    }
+
     public int getIdSucursalSeleccionada() {
         int fila = tablaSucursales.getSelectedRow();
         if (fila == -1) {
@@ -178,12 +197,40 @@ public class SuperAdminFrame extends JFrame {
         }
     }
 
-    public void addGuardarSucursalListener(ActionListener listener) {
-        btnGuardarSucursal.addActionListener(listener);
-    }
+    // Toda la parte de la vista que esta relacionado con Usuario
+    private JPanel crearPanelUsuarios() {
+        JPanel panel = new JPanel();
+        panel.setLayout(null);
+        panel.setBackground(new Color(30, 30, 30));
 
-    public void addEliminarSucursalListener(ActionListener listener) {
-        btnEliminarSucursal.addActionListener(listener);
+        JLabel lblTitulo = new JLabel("Datos del Usuario");
+        lblTitulo.setFont(titulo);
+        lblTitulo.setForeground(new Color(241,196,15));
+        lblTitulo.setBounds(20,10,300,30);
+        panel.add(lblTitulo);
+
+        JLabel lblNombre = new JLabel("Nombre");
+        lblNombre.setFont(principal);
+        lblNombre.setForeground(textColor);
+        lblNombre.setBounds(20,50,250,20);
+        panel.add(lblNombre);
+
+        txtNombreUsuario = new JTextField();
+        txtNombreUsuario.setFont(secundario);
+        txtNombreUsuario.setBounds(20,70,250,30);
+        panel.add(txtNombreUsuario);
+
+        JLabel lblEmail = new JLabel("Email");
+        lblEmail.setFont(principal);
+        lblEmail.setForeground(textColor);
+        lblEmail.setBounds(20,110,250,20);
+
+        txtEmailUsuario = new JTextField();
+        txtEmailUsuario.setFont(secundario);
+        txtEmailUsuario.setBounds(20, 130, 250, 30);
+        panel.add(txtEmailUsuario);
+
+        return null;
     }
 
     public void mostrarMensaje(String mensaje, String titulo, int tipo) {

@@ -1,8 +1,12 @@
 package org.practica1.controllers;
 
+import org.apache.commons.lang3.StringUtils;
+import org.practica1.dao.SucursalDAO;
 import org.practica1.dao.UsuarioDAO;
+import org.practica1.models.EnumUsuario;
 import org.practica1.models.Usuario;
 import org.practica1.views.LoginFrame;
+import org.practica1.views.SuperAdminFrame;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -10,7 +14,7 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.Optional;
 
-public class LoginController {
+public class LoginController implements ActionListener {
     private final LoginFrame vista;
     private final UsuarioDAO dao;
 
@@ -18,19 +22,19 @@ public class LoginController {
         this.vista = vista;
         this.dao = dao;
 
-        this.vista.addLoginListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                intentarLogin();
-            }
-        });
+        this.vista.getBtnIngresar().addActionListener(this);
+
+    }
+
+    public void actionPerformed(ActionEvent actionEvent) {
+        intentarLogin();
     }
 
     private void intentarLogin() {
         String email = vista.getEmail();
         String password = vista.getPassword();
 
-        if (email.isEmpty() || password.isEmpty()) {
+        if (StringUtils.isBlank(email) || StringUtils.isBlank(password)) {
             vista.mostrarMensaje("Por favor, llene todos los campos.", "Campos vacíos", JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -42,6 +46,18 @@ public class LoginController {
             if (usuarioOpt.isPresent()) {
                 Usuario user = usuarioOpt.get();
                 vista.mostrarMensaje("Bienvenido " + user.getNombre(), "Login Exitoso", JOptionPane.INFORMATION_MESSAGE);
+
+                if (user.getRol().equals(EnumUsuario.SUPER_ADMIN)) {
+                    SuperAdminFrame superAdminFrame = new SuperAdminFrame();
+                    SucursalDAO sucursalDAO = new SucursalDAO();
+                    SucursalController sucursalController = new SucursalController(superAdminFrame,sucursalDAO);
+                    superAdminFrame.setVisible(true);
+                    vista.dispose();
+                } else if (user.getRol().equals(EnumUsuario.ADMIN_TIENDA)) {
+                    vista.mostrarMensaje("Pantalla de Admin de Tienda en construcción...", "Info", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    vista.mostrarMensaje("Pantalla de Jugador en construcción...", "Info", JOptionPane.INFORMATION_MESSAGE);
+                }
 
             } else {
                 vista.mostrarMensaje("Credenciales incorrectas o usuario inactivo.", "Error de Acceso", JOptionPane.ERROR_MESSAGE);

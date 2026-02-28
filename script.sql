@@ -5,7 +5,7 @@ USE Practica1;
 CREATE TABLE IF NOT EXISTS sucursal (
     sucursal_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     nombre VARCHAR(250) NOT NULL,
-    contacto CHAR(8) NOT NULL,
+    contacto CHAR(8) NOT NULL UNIQUE,
     ubicacion VARCHAR(250) UNIQUE NOT NULL
 );
 

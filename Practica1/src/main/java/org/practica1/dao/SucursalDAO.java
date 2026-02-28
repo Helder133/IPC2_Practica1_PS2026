@@ -20,11 +20,46 @@ public class SucursalDAO implements CRUD<Sucursal> {
     private static final String OBTENER_POR_ID = "SELECT * FROM sucursal WHERE sucursal_id = ?";
     private static final String ELIMINAR = "DELETE FROM sucursal WHERE sucursal_id = ?";
     private static final String VALIDAR_UBICACION = "SELECT sucursal_id FROM sucursal WHERE ubicacion = ?";
+    private static final String VALIDAR_CONTACTO = "SELECT sucursal_id FROM sucursal WHERE contacto = ?";
+    private static final String VALIDAR_NUEVA_UBICACION = "SELECT sucursal_id FROM sucursal WHERE ubicacion = ? AND sucursal_id <> ?";
+    private static final String VALIDAR_NUEVO_CONTACTO = "SELECT sucursal_id FROM sucursal WHERE contacto = ? AND sucursal_id <> ?";
+
+    public boolean validarNuevaUbicacion (String ubicacion, int id) throws SQLException {
+        Connection connection = Conexion.getInstancia().getConnection();
+        try (PreparedStatement validar = connection.prepareStatement(VALIDAR_NUEVA_UBICACION)) {
+            validar.setString(1,ubicacion);
+            validar.setInt(2,id);
+            try (ResultSet resultSet = validar.executeQuery()) {
+                return resultSet.next();
+            }
+        }
+    }
+
+    public boolean validarNuevoContacto (String contacto, int id) throws SQLException {
+        Connection connection = Conexion.getInstancia().getConnection();
+        try (PreparedStatement validar = connection.prepareStatement(VALIDAR_NUEVO_CONTACTO)) {
+            validar.setString(1,contacto);
+            validar.setInt(2,id);
+            try (ResultSet resultSet = validar.executeQuery()) {
+                return resultSet.next();
+            }
+        }
+    }
 
     public boolean existeUbicacion(String ubicacion) throws SQLException {
         Connection connection = Conexion.getInstancia().getConnection();
         try (PreparedStatement validar = connection.prepareStatement(VALIDAR_UBICACION)) {
             validar.setString(1,ubicacion);
+            try (ResultSet resultSet = validar.executeQuery()) {
+                return resultSet.next();
+            }
+        }
+    }
+
+    public boolean existeContacto(String contacto) throws SQLException {
+        Connection connection = Conexion.getInstancia().getConnection();
+        try (PreparedStatement validar = connection.prepareStatement(VALIDAR_CONTACTO)) {
+            validar.setString(1, contacto);
             try (ResultSet resultSet = validar.executeQuery()) {
                 return resultSet.next();
             }

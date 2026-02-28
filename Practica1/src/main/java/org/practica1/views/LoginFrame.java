@@ -95,4 +95,8 @@ public class LoginFrame extends JFrame {
     public void mostrarMensaje(String mensaje, String titulo, int tipoMensaje) {
         JOptionPane.showMessageDialog(this, mensaje, titulo, tipoMensaje);
     }
+
+    public JButton getBtnIngresar() {
+        return btnIngresar;
+    }
 }

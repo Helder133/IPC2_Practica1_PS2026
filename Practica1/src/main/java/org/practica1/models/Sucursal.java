@@ -47,9 +47,9 @@ public class Sucursal {
     }
 
     public boolean isValid() {
-        return StringUtils.isBlank(nombre) &&
-                StringUtils.isBlank(ubicacion) &&
-                StringUtils.isBlank(contacto);
+        return StringUtils.isNotBlank(nombre) &&
+                StringUtils.isNotBlank(ubicacion) &&
+                StringUtils.isNotBlank(contacto);
     }
 
     @Override

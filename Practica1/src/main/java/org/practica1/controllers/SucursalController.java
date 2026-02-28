@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.List;
 
-public class SucursalController {
+public class SucursalController implements ActionListener {
 
     private final SuperAdminFrame vista;
     private final SucursalDAO dao;
@@ -19,44 +19,45 @@ public class SucursalController {
         this.vista = vista;
         this.dao = dao;
 
-        this.vista.addGuardarSucursalListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                guardarSucursal();
-            }
-        });
-
-        this.vista.addEliminarSucursalListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                eliminarSucursal();
-            }
-        });
+        this.vista.getBtnGuardarSucursal().addActionListener(this);
+        this.vista.getBtnEliminarSucursal().addActionListener(this);
 
         cargarTabla();
     }
 
+    @Override
+    public void actionPerformed(ActionEvent actionEvent) {
+        if (actionEvent.getSource() == vista.getBtnGuardarSucursal()) {
+            guardarSucursal();
+        } else {
+            eliminarSucursal();
+        }
+    }
+
     private void guardarSucursal() {
-        // 1. Recopilar datos de la vista
+
         String nombre = vista.getNombreSucursal();
         String contacto = vista.getContactoSucursal();
         String ubicacion = vista.getUbicacionSucursal();
 
         int id = vista.getIdSucursalSeleccionada();
 
-        // 2. Validación Básica
-        if (nombre.isEmpty() || ubicacion.isEmpty()) {
-            vista.mostrarMensaje("El nombre y la ubicación son obligatorios.", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
+        Sucursal sucursal = new Sucursal(nombre, contacto, ubicacion);
+
+        if (!sucursal.isValid()) {
+            vista.mostrarMensaje("El nombre, el contacto y la ubicación son obligatorios.", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         try {
-            Sucursal sucursal = new Sucursal(nombre, contacto, ubicacion);
 
             if (id == 0) {
 
                 if (dao.existeUbicacion(ubicacion)) {
                     vista.mostrarMensaje("Ya existe una sucursal en esta ubicación.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+                    return;
+                } else if (dao.existeContacto(contacto)) {
+                    vista.mostrarMensaje("Ya existe una sucursal en este contacto.", "Error de validación", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
@@ -64,8 +65,14 @@ public class SucursalController {
                 vista.mostrarMensaje("Sucursal creada con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
             } else {
-
                 sucursal.setSucursal_id(id);
+                if (dao.validarNuevaUbicacion(sucursal.getUbicacion(), sucursal.getSucursal_id())) {
+                    vista.mostrarMensaje("Ya existe una sucursal en esta ubicación.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+                    return;
+                } else if (dao.validarNuevoContacto(sucursal.getContacto(), sucursal.getSucursal_id())) {
+                    vista.mostrarMensaje("Ya existe una sucursal en este contacto.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 dao.actualizar(sucursal);
                 vista.mostrarMensaje("Sucursal actualizada con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             }
