@@ -49,6 +49,11 @@ public class SucursalController implements ActionListener {
             return;
         }
 
+        if (sucursal.getContacto().trim().length() > 8) {
+            vista.mostrarMensaje("El número de contacto, solo debe ser de maximo 8 caracteres.", "Error de validacióno", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         try {
 
             if (id == 0) {

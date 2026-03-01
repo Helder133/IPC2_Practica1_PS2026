@@ -17,10 +17,11 @@ public class UsuarioDAO implements CRUD<Usuario> {
     private static final String ACTUALIZAR_CON_CONTRASENA = "UPDATE usuario SET sucursal_id = ?, nombre = ?, email = ?, contrasena = ?, rol = ? WHERE usuario_id = ?";
     private static final String OBTENER_POR_ID = "SELECT * FROM usuario WHERE usuario_id = ?";
     private static final String OBTENER_TODO = "SELECT * FROM usuario";
-    private static final String DESACTIVAR_USUARIO = "UPDATE usuario SET estado = 0 WHERE usuario_id = ?";
-    private static final String ACTIVAR_USUARIO = "UPDATE usuario SET estado = 1 WHERE usuario_id = ?";
+    private static final String DESACTIVAR_ACTIVAR_USUARIO = "UPDATE usuario SET estado = NOT estado WHERE usuario_id = ?";
+    //private static final String ACTIVAR_USUARIO = "UPDATE usuario SET estado = 1 WHERE usuario_id = ?";
     private static final String LOGIN = "SELECT * FROM usuario WHERE email = ? AND contrasena = ? AND estado = 1";
     private static final String VALIDAR_EMAIL = "SELECT usuario_id FROM usuario WHERE email = ?";
+    private static final String VALIDAR_EMAIL_ACTUALIZADO = "SELECT usuario_id FROM usuario WHERE email = ? AND usuario_id <> ?";
 
     public Optional<Usuario> login(Usuario usuario) throws SQLException {
         Connection connection = Conexion.getInstancia().getConnection();
@@ -40,6 +41,17 @@ public class UsuarioDAO implements CRUD<Usuario> {
         Connection connection = Conexion.getInstancia().getConnection();
         try (PreparedStatement unique = connection.prepareStatement(VALIDAR_EMAIL)) {
             unique.setString(1,email);
+            try (ResultSet resultSet = unique.executeQuery();) {
+                return resultSet.next();
+            }
+        }
+    }
+
+    public boolean existeEmail(String email, int id) throws SQLException {
+        Connection connection = Conexion.getInstancia().getConnection();
+        try (PreparedStatement unique = connection.prepareStatement(VALIDAR_EMAIL_ACTUALIZADO)) {
+            unique.setString(1,email);
+            unique.setInt(2,id);
             try (ResultSet resultSet = unique.executeQuery();) {
                 return resultSet.next();
             }
@@ -130,21 +142,21 @@ public class UsuarioDAO implements CRUD<Usuario> {
     @Override
     public void eliminar(int id) throws SQLException {
         Connection connection = Conexion.getInstancia().getConnection();
-        try (PreparedStatement delete = connection.prepareStatement(DESACTIVAR_USUARIO)) {
+        try (PreparedStatement delete = connection.prepareStatement(DESACTIVAR_ACTIVAR_USUARIO)) {
             delete.setInt(1, id);
             delete.executeUpdate();
         }
     }
-
+    /*
     public void activar(int id) throws SQLException {
         Connection connection = Conexion.getInstancia().getConnection();
         try (PreparedStatement delete = connection.prepareStatement(ACTIVAR_USUARIO)) {
             delete.setInt(1, id);
             delete.executeUpdate();
         }
-    }
+    }*/
 
-    private Usuario     extraer(ResultSet resultSet) throws SQLException {
+    private Usuario extraer(ResultSet resultSet) throws SQLException {
         Usuario usuario = new Usuario(
                 resultSet.getInt("sucursal_id"),
                 resultSet.getString("nombre"),

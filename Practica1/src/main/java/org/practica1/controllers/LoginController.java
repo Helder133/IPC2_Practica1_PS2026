@@ -49,8 +49,13 @@ public class LoginController implements ActionListener {
 
                 if (user.getRol().equals(EnumUsuario.SUPER_ADMIN)) {
                     SuperAdminFrame superAdminFrame = new SuperAdminFrame();
+
                     SucursalDAO sucursalDAO = new SucursalDAO();
+                    UsuarioDAO usuarioDao = new UsuarioDAO();
+
                     SucursalController sucursalController = new SucursalController(superAdminFrame,sucursalDAO);
+                    UsuarioController usuarioController = new UsuarioController(superAdminFrame,usuarioDao,sucursalDAO);
+
                     superAdminFrame.setVisible(true);
                     vista.dispose();
                 } else if (user.getRol().equals(EnumUsuario.ADMIN_TIENDA)) {

@@ -79,11 +79,10 @@ public class Usuario {
     }
 
     public boolean isValid() {
-        return StringUtils.isBlank(nombre) &&
-                StringUtils.isBlank(email) &&
-                StringUtils.isBlank(contrasena) &&
-                rol == null &&
-                usuario_id > 0;
+        return StringUtils.isNotBlank(nombre) &&
+                StringUtils.isNotBlank(email) &&
+                StringUtils.isNotBlank(contrasena) &&
+                rol != null ;
 
     }
 
