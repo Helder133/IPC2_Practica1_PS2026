@@ -3,7 +3,7 @@ package org.practica1.models;
 public class Configuracion {
 
     private int configuracion_id;
-    private int timpo_preparacion;
+    private int tiempo_preparacion;
     private int dificultad_nivel; //tiempo que se le va reduciendo con forme sube de nivel
     private int punteo_minimo;
     private int completo;
@@ -13,7 +13,7 @@ public class Configuracion {
     private int no_entregado;
 
     public Configuracion(int timpo_preparacion, int dificultad_nivel, int punteo_minimo, int completo, int completo_optimo, double completo_eficiente, int no_entregado, int cancelado) {
-        this.timpo_preparacion = timpo_preparacion;
+        this.tiempo_preparacion = timpo_preparacion;
         this.dificultad_nivel = dificultad_nivel;
         this.punteo_minimo = punteo_minimo;
         this.completo = completo;
@@ -31,12 +31,12 @@ public class Configuracion {
         this.configuracion_id = configuracion_id;
     }
 
-    public int getTimpo_preparacion() {
-        return timpo_preparacion;
+    public int getTiempo_preparacion() {
+        return tiempo_preparacion;
     }
 
-    public void setTimpo_preparacion(int timpo_preparacion) {
-        this.timpo_preparacion = timpo_preparacion;
+    public void setTiempo_preparacion(int tiempo_preparacion) {
+        this.tiempo_preparacion = tiempo_preparacion;
     }
 
     public int getDificultad_nivel() {

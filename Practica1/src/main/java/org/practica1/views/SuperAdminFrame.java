@@ -1,5 +1,6 @@
 package org.practica1.views;
 
+import org.practica1.models.Configuracion;
 import org.practica1.models.Sucursal;
 import org.practica1.models.Usuario;
 
@@ -32,6 +33,18 @@ public class SuperAdminFrame extends JFrame {
     private JTable tablaUsuarios;
     private DefaultTableModel modeloUsuarios;
 
+    // Variables que sirven para modificar los valores con los que trabaja en el sistema
+    private SpinnerModel model = new SpinnerNumberModel(10,0,10000,1);
+    private JSpinner jsTiempoPreparacion;
+    private JSpinner jsDificultadNivel;
+    private JSpinner jsPunteoMinimo;
+    private JSpinner jsCompleto;
+    private JSpinner jsCompletoOptimo;
+    private JSpinner jsCompletoEficiente;
+    private JSpinner jsCancelado;
+    private JSpinner jsNoEntregado;
+    private JButton btnGuardarConfig;
+
     private Font titulo = new Font("Arial", Font.BOLD, 18);
     private Font principal = new Font("Helvetica", Font.BOLD, 14);
     private Font secundario = new Font("Helvetica", Font.PLAIN, 13);
@@ -51,11 +64,13 @@ public class SuperAdminFrame extends JFrame {
         tabbedPane.setFont(principal);
 
         JPanel panelSucursal = crearPanelSucursal();
-        tabbedPane.addTab("Gestion de sucursales", null, panelSucursal, "Administrar las tiendas");
+        tabbedPane.addTab("Gestión de sucursales", null, panelSucursal, "Administrar las tiendas");
 
         JPanel panelUsuarios = crearPanelUsuarios();
-        panelUsuarios.setBackground(new Color(30, 30, 30));
         tabbedPane.addTab("Gestión de Usuarios", null, panelUsuarios, "Administrar empleados y jugadores");
+
+        JPanel panelConfig = crearPanelConfig();
+        tabbedPane.addTab("Gestión del sistema", null, panelConfig, "Administrar el sistema");
 
         add(tabbedPane);
     }
@@ -278,6 +293,15 @@ public class SuperAdminFrame extends JFrame {
         btnEliminarUsuario.setForeground(Color.WHITE);
         panel.add(btnEliminarUsuario);
 
+        btnLimpiarUsuario = new JButton("Limpiar Campos");
+        btnLimpiarUsuario.setFont(principal);
+        btnLimpiarUsuario.setBounds(20,450,250,35);
+        btnLimpiarUsuario.setBackground(new Color(149, 165, 166));
+        btnLimpiarUsuario.setForeground(Color.WHITE);
+        panel.add(btnLimpiarUsuario);
+
+        btnLimpiarUsuario.addActionListener(e -> limpiarFormularioUsuario());
+
         //Tabla donde se van ha mostrar los usuarios
         String[] columnas = {"Id", "Nombre", "Email", "Rol", "Id Suc", "Estado"};
         modeloUsuarios = new DefaultTableModel(columnas, 0) {
@@ -384,6 +408,152 @@ public class SuperAdminFrame extends JFrame {
                     estadoLegible
             });
         }
+    }
+
+    private JPanel crearPanelConfig(){
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(new Color(30, 30, 30));
+
+        JLabel lblTitulo = new JLabel("Configuracion del sistema");
+        lblTitulo.setFont(titulo);
+        lblTitulo.setForeground(new Color(241,196,15));
+        panel.add(lblTitulo);
+
+        JLabel lblTiempoPreparacion = new JLabel("Tiempo de preparacion de un pedido");
+        lblTiempoPreparacion.setFont(principal);
+        lblTiempoPreparacion.setForeground(textColor);
+        panel.add(lblTiempoPreparacion);
+
+        jsTiempoPreparacion = new JSpinner(model);
+        jsTiempoPreparacion.setFont(secundario);
+        jsTiempoPreparacion.setForeground(textColor);
+        panel.add(jsTiempoPreparacion);
+
+        JLabel lblDificultadNivel = new JLabel("Tiempo que se resta miestras sube de nivel para cada pedido");
+        lblDificultadNivel.setFont(principal);
+        lblDificultadNivel.setForeground(textColor);
+        panel.add(lblDificultadNivel);
+
+        jsDificultadNivel = new JSpinner(model);
+        jsDificultadNivel.setFont(secundario);
+        jsDificultadNivel.setForeground(textColor);
+        panel.add(jsDificultadNivel);
+
+        JLabel lblPuntoMinimo = new JLabel("Punteo minimo que se requiere para pasar de nivel");
+        lblPuntoMinimo.setFont(principal);
+        lblPuntoMinimo.setForeground(textColor);
+        panel.add(lblPuntoMinimo);
+
+        jsPunteoMinimo = new JSpinner(model);
+        jsPunteoMinimo.setFont(secundario);
+        jsPunteoMinimo.setForeground(textColor);
+        panel.add(jsPunteoMinimo);
+
+        JLabel lblCompleto = new JLabel("Punteo que se gana al completar un pedido");
+        lblCompleto.setFont(principal);
+        lblCompleto.setForeground(textColor);
+        panel.add(lblCompleto);
+
+        jsCompleto = new JSpinner(model);
+        jsCompleto.setFont(secundario);
+        jsCompleto.setForeground(textColor);
+        panel.add(jsCompleto);
+
+        JLabel lblCompletoOptimo = new JLabel("Punteo que se gana al completar un pedido, antes del tiempo limite");
+        lblCompletoOptimo.setFont(principal);
+        lblCompletoOptimo.setForeground(textColor);
+        panel.add(lblCompletoOptimo);
+
+        jsCompletoOptimo = new JSpinner(model);
+        jsCompletoOptimo.setFont(secundario);
+        jsCompletoOptimo.setForeground(textColor);
+        panel.add(jsCompletoOptimo);
+
+        JLabel lblCompletoEficiente = new JLabel("Bonus que se gana al completar un pedido antes de la mitad del tiempo (%)");
+        lblCompletoEficiente.setFont(principal);
+        lblCompletoEficiente.setForeground(textColor);
+        panel.add(lblCompletoEficiente);
+
+        jsCompletoEficiente = new JSpinner(model);
+        jsCompletoEficiente.setFont(secundario);
+        jsCompletoEficiente.setForeground(textColor);
+        panel.add(jsCompletoEficiente);
+
+        JLabel lblCancelado = new JLabel("Punteo que se pierde al cancelar un pedido");
+        lblCancelado.setFont(principal);
+        lblCancelado.setForeground(textColor);
+        panel.add(lblCancelado);
+
+        jsCancelado = new JSpinner(model);
+        jsCancelado.setFont(secundario);
+        jsCancelado.setForeground(textColor);
+        panel.add(jsCancelado);
+
+        JLabel lblNoEntregado = new JLabel("Punteo que se pierde al no entregar un pedido");
+        lblNoEntregado.setFont(principal);
+        lblNoEntregado.setForeground(textColor);
+        panel.add(lblNoEntregado);
+
+        jsNoEntregado = new JSpinner(model);
+        jsNoEntregado.setFont(secundario);
+        jsNoEntregado.setForeground(textColor);
+        panel.add(jsNoEntregado);
+
+        btnGuardarConfig = new JButton("Guardar cambios");
+        btnGuardarConfig.setFont(principal);
+        btnGuardarConfig.setBackground(new Color(46,204,113));
+        btnGuardarConfig.setForeground(Color.WHITE);
+        panel.add(btnGuardarConfig);
+
+        return panel;
+    }
+
+    public void cargarConfiguracion(Configuracion configuracion) {
+        jsTiempoPreparacion.setValue(configuracion.getTiempo_preparacion());
+        jsDificultadNivel.setValue(configuracion.getDificultad_nivel());
+        jsPunteoMinimo.setValue(configuracion.getPunteo_minimo());
+        jsCompleto.setValue(configuracion.getCompleto());
+        jsCompletoOptimo.setValue(configuracion.getCompleto_optimo());
+        jsCompletoEficiente.setValue(configuracion.getCompleto_eficiente());
+        jsCancelado.setValue(configuracion.getCancelado());
+        jsNoEntregado.setValue(configuracion.getNo_entregado());
+    }
+
+    public int getJsTiempoPreparacion() {
+        return (Integer) jsTiempoPreparacion.getValue();
+    }
+
+    public int getJsDificultadNivel() {
+        return (Integer) jsDificultadNivel.getValue();
+    }
+
+    public int getJsPunteoMinimo() {
+        return (Integer) jsPunteoMinimo.getValue();
+    }
+
+    public int getJsCompleto() {
+        return (Integer) jsCompleto.getValue();
+    }
+
+    public int getJsCompletoOptimo() {
+        return (Integer) jsCompletoOptimo.getValue();
+    }
+
+    public double getJsCompletoEficiente() {
+        return (Double) jsCompletoEficiente.getValue();
+    }
+
+    public int getJsCancelado() {
+        return (Integer) jsCancelado.getValue();
+    }
+
+    public int getJsNoEntregado() {
+        return (Integer) jsNoEntregado.getValue();
+    }
+
+    public JButton getBtnGuardarConfig() {
+        return btnGuardarConfig;
     }
 
     public void mostrarMensaje(String mensaje, String titulo, int tipo) {

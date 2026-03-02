@@ -1,6 +1,7 @@
 package org.practica1.controllers;
 
 import org.apache.commons.lang3.StringUtils;
+import org.practica1.dao.ConfiguracionDAO;
 import org.practica1.dao.SucursalDAO;
 import org.practica1.dao.UsuarioDAO;
 import org.practica1.models.EnumUsuario;
@@ -52,9 +53,11 @@ public class LoginController implements ActionListener {
 
                     SucursalDAO sucursalDAO = new SucursalDAO();
                     UsuarioDAO usuarioDao = new UsuarioDAO();
+                    ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
 
                     SucursalController sucursalController = new SucursalController(superAdminFrame,sucursalDAO);
                     UsuarioController usuarioController = new UsuarioController(superAdminFrame,usuarioDao,sucursalDAO);
+                    ConfiguracionController configuracionController = new ConfiguracionController(superAdminFrame,configuracionDAO);
 
                     superAdminFrame.setVisible(true);
                     vista.dispose();

@@ -147,14 +147,6 @@ public class UsuarioDAO implements CRUD<Usuario> {
             delete.executeUpdate();
         }
     }
-    /*
-    public void activar(int id) throws SQLException {
-        Connection connection = Conexion.getInstancia().getConnection();
-        try (PreparedStatement delete = connection.prepareStatement(ACTIVAR_USUARIO)) {
-            delete.setInt(1, id);
-            delete.executeUpdate();
-        }
-    }*/
 
     private Usuario extraer(ResultSet resultSet) throws SQLException {
         Usuario usuario = new Usuario(
