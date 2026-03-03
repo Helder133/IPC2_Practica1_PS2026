@@ -13,6 +13,7 @@ public class Usuario {
     private String contrasena;
     private EnumUsuario rol;
     private boolean estado;
+    private String nombreSucursal;
 
     public Usuario(int sucursal_id,String nombre, String email, String contrasena, EnumUsuario rol) {
         this.sucursal_id = sucursal_id;
@@ -76,6 +77,14 @@ public class Usuario {
 
     public void setEstado(boolean estado) {
         this.estado = estado;
+    }
+
+    public String getNombreSucursal() {
+        return nombreSucursal;
+    }
+
+    public void setNombreSucursal(String nombreSucursal) {
+        this.nombreSucursal = nombreSucursal;
     }
 
     public boolean isValid() {

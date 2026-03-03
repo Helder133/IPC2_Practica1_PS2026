@@ -34,8 +34,8 @@ public class SuperAdminFrame extends JFrame {
     private DefaultTableModel modeloUsuarios;
 
     // Variables que sirven para modificar los valores con los que trabaja en el sistema
-    private SpinnerModel model = new SpinnerNumberModel(10,0,10000,1);
     private JSpinner jsTiempoPreparacion;
+    private JLabel lblId;
     private JSpinner jsDificultadNivel;
     private JSpinner jsPunteoMinimo;
     private JSpinner jsCompleto;
@@ -295,7 +295,7 @@ public class SuperAdminFrame extends JFrame {
 
         btnLimpiarUsuario = new JButton("Limpiar Campos");
         btnLimpiarUsuario.setFont(principal);
-        btnLimpiarUsuario.setBounds(20,450,250,35);
+        btnLimpiarUsuario.setBounds(20, 450, 250, 35);
         btnLimpiarUsuario.setBackground(new Color(149, 165, 166));
         btnLimpiarUsuario.setForeground(Color.WHITE);
         panel.add(btnLimpiarUsuario);
@@ -410,100 +410,120 @@ public class SuperAdminFrame extends JFrame {
         }
     }
 
-    private JPanel crearPanelConfig(){
+    private JPanel crearPanelConfig() {
         JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setLayout(null);
         panel.setBackground(new Color(30, 30, 30));
 
         JLabel lblTitulo = new JLabel("Configuracion del sistema");
         lblTitulo.setFont(titulo);
-        lblTitulo.setForeground(new Color(241,196,15));
+        lblTitulo.setBounds(300, 30, 850, 30);
+        lblTitulo.setForeground(new Color(241, 196, 15));
         panel.add(lblTitulo);
 
-        JLabel lblTiempoPreparacion = new JLabel("Tiempo de preparacion de un pedido");
+        lblId = new JLabel("0");
+        lblId.setVisible(false);
+        panel.add(lblId);
+
+        int xIzq = 80;
+        int anchoCol = 320;
+
+        JLabel lblTiempoPreparacion = new JLabel("Tiempo de preparación base (seg):");
         lblTiempoPreparacion.setFont(principal);
         lblTiempoPreparacion.setForeground(textColor);
+        lblTiempoPreparacion.setBounds(xIzq, 90, anchoCol, 20);
         panel.add(lblTiempoPreparacion);
 
-        jsTiempoPreparacion = new JSpinner(model);
+        jsTiempoPreparacion = new JSpinner(new SpinnerNumberModel(60, 0, 10000, 1));
         jsTiempoPreparacion.setFont(secundario);
-        jsTiempoPreparacion.setForeground(textColor);
+        jsTiempoPreparacion.setBounds(xIzq, 110, anchoCol, 35);
         panel.add(jsTiempoPreparacion);
 
-        JLabel lblDificultadNivel = new JLabel("Tiempo que se resta miestras sube de nivel para cada pedido");
+        JLabel lblDificultadNivel = new JLabel("Dificultad (Tiempo restado por nivel):");
         lblDificultadNivel.setFont(principal);
         lblDificultadNivel.setForeground(textColor);
+        lblDificultadNivel.setBounds(xIzq, 170, anchoCol, 20);
         panel.add(lblDificultadNivel);
 
-        jsDificultadNivel = new JSpinner(model);
+        jsDificultadNivel = new JSpinner(new SpinnerNumberModel(10, 0, 10000, 1));
         jsDificultadNivel.setFont(secundario);
-        jsDificultadNivel.setForeground(textColor);
+        jsDificultadNivel.setBounds(xIzq, 190, anchoCol, 35);
         panel.add(jsDificultadNivel);
 
-        JLabel lblPuntoMinimo = new JLabel("Punteo minimo que se requiere para pasar de nivel");
+        JLabel lblPuntoMinimo = new JLabel("Punteo mínimo para subir de nivel:");
         lblPuntoMinimo.setFont(principal);
         lblPuntoMinimo.setForeground(textColor);
+        lblPuntoMinimo.setBounds(xIzq, 250, anchoCol, 20);
         panel.add(lblPuntoMinimo);
 
-        jsPunteoMinimo = new JSpinner(model);
+        jsPunteoMinimo = new JSpinner(new SpinnerNumberModel(600, 0, 10000, 1));
         jsPunteoMinimo.setFont(secundario);
-        jsPunteoMinimo.setForeground(textColor);
+        jsPunteoMinimo.setBounds(xIzq, 270, anchoCol, 35);
         panel.add(jsPunteoMinimo);
 
-        JLabel lblCompleto = new JLabel("Punteo que se gana al completar un pedido");
+        JLabel lblCompleto = new JLabel("Puntos al completar un pedido normal:");
         lblCompleto.setFont(principal);
         lblCompleto.setForeground(textColor);
+        lblCompleto.setBounds(xIzq, 330, anchoCol, 20);
         panel.add(lblCompleto);
 
-        jsCompleto = new JSpinner(model);
+        jsCompleto = new JSpinner(new SpinnerNumberModel(100, 0, 10000, 1));
         jsCompleto.setFont(secundario);
-        jsCompleto.setForeground(textColor);
+        jsCompleto.setBounds(xIzq, 350, anchoCol, 35);
         panel.add(jsCompleto);
 
-        JLabel lblCompletoOptimo = new JLabel("Punteo que se gana al completar un pedido, antes del tiempo limite");
+        int xDer = 450;
+
+        JLabel lblCompletoOptimo = new JLabel("Puntos al completar antes del límite:");
         lblCompletoOptimo.setFont(principal);
         lblCompletoOptimo.setForeground(textColor);
+        lblCompletoOptimo.setBounds(xDer, 90, anchoCol, 20);
         panel.add(lblCompletoOptimo);
 
-        jsCompletoOptimo = new JSpinner(model);
+        jsCompletoOptimo = new JSpinner(new SpinnerNumberModel(50, 0, 10000, 1));
         jsCompletoOptimo.setFont(secundario);
-        jsCompletoOptimo.setForeground(textColor);
+        jsCompletoOptimo.setBounds(xDer, 110, anchoCol, 35);
         panel.add(jsCompletoOptimo);
 
-        JLabel lblCompletoEficiente = new JLabel("Bonus que se gana al completar un pedido antes de la mitad del tiempo (%)");
+        JLabel lblCompletoEficiente = new JLabel("Bonus por velocidad (Multiplicador %):");
         lblCompletoEficiente.setFont(principal);
         lblCompletoEficiente.setForeground(textColor);
+        lblCompletoEficiente.setBounds(xDer, 170, anchoCol, 20);
         panel.add(lblCompletoEficiente);
 
-        jsCompletoEficiente = new JSpinner(model);
+        jsCompletoEficiente = new JSpinner(new SpinnerNumberModel(0.5, 0.0, 100.0, 0.1));
         jsCompletoEficiente.setFont(secundario);
-        jsCompletoEficiente.setForeground(textColor);
+        jsCompletoEficiente.setBounds(xDer, 190, anchoCol, 35);
         panel.add(jsCompletoEficiente);
 
-        JLabel lblCancelado = new JLabel("Punteo que se pierde al cancelar un pedido");
+        JLabel lblCancelado = new JLabel("Puntos perdidos al cancelar un pedido:");
         lblCancelado.setFont(principal);
         lblCancelado.setForeground(textColor);
+        lblCancelado.setBounds(xDer, 250, anchoCol, 20);
         panel.add(lblCancelado);
 
-        jsCancelado = new JSpinner(model);
+        jsCancelado = new JSpinner(new SpinnerNumberModel(30, 0, 10000, 1));
         jsCancelado.setFont(secundario);
-        jsCancelado.setForeground(textColor);
+        jsCancelado.setBounds(xDer, 270, anchoCol, 35);
         panel.add(jsCancelado);
 
-        JLabel lblNoEntregado = new JLabel("Punteo que se pierde al no entregar un pedido");
+        JLabel lblNoEntregado = new JLabel("Puntos perdidos por no entregar:");
         lblNoEntregado.setFont(principal);
         lblNoEntregado.setForeground(textColor);
+        lblNoEntregado.setBounds(xDer, 330, anchoCol, 20);
         panel.add(lblNoEntregado);
 
-        jsNoEntregado = new JSpinner(model);
+        jsNoEntregado = new JSpinner(new SpinnerNumberModel(50, 0, 10000, 1));
         jsNoEntregado.setFont(secundario);
-        jsNoEntregado.setForeground(textColor);
+        jsNoEntregado.setBounds(xDer, 350, anchoCol, 35);
         panel.add(jsNoEntregado);
 
-        btnGuardarConfig = new JButton("Guardar cambios");
-        btnGuardarConfig.setFont(principal);
-        btnGuardarConfig.setBackground(new Color(46,204,113));
+        btnGuardarConfig = new JButton("Guardar Reglas del Juego");
+        btnGuardarConfig.setFont(new Font("Helvetica", Font.BOLD, 14));
+        btnGuardarConfig.setBackground(new Color(46, 204, 113));
         btnGuardarConfig.setForeground(Color.WHITE);
+        btnGuardarConfig.setFocusPainted(false);
+        btnGuardarConfig.setBounds(300, 430, 225, 45);
         panel.add(btnGuardarConfig);
 
         return panel;
@@ -518,6 +538,7 @@ public class SuperAdminFrame extends JFrame {
         jsCompletoEficiente.setValue(configuracion.getCompleto_eficiente());
         jsCancelado.setValue(configuracion.getCancelado());
         jsNoEntregado.setValue(configuracion.getNo_entregado());
+        lblId.setText(String.valueOf(configuracion.getConfiguracion_id()));
     }
 
     public int getJsTiempoPreparacion() {
@@ -550,6 +571,10 @@ public class SuperAdminFrame extends JFrame {
 
     public int getJsNoEntregado() {
         return (Integer) jsNoEntregado.getValue();
+    }
+
+    public int getLblId() {
+        return Integer.parseInt(lblId.getText());
     }
 
     public JButton getBtnGuardarConfig() {

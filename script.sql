@@ -20,6 +20,8 @@ CREATE TABLE IF NOT EXISTS usuario (
     CONSTRAINT fk_sucursal1 FOREIGN KEY (sucursal_id) REFERENCES sucursal (sucursal_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
+SELECT u.*, s.nombre AS nombre_sucursal FROM usuario AS u LEFT JOIN sucursal AS s ON u.sucursal_id = s.sucursal_id;
+
 CREATE TABLE IF NOT EXISTS partida (
     partida_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL ,
     usuario_id INT NOT NULL ,
@@ -99,11 +101,11 @@ CREATE TABLE IF NOT EXISTS historial_pedido (
 
 CREATE TABLE IF NOT EXISTS configuracion_sistema (
     configuracion_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-    tiempo_preparacion INT NOT NULL DEFAULT 60,
+    tiempo_preparacion INT NOT NULL DEFAULT 60, -- si un producto no dice su tiempo de preparacion, se usara este
     dificultad_nivel INT NOT NULL DEFAULT 10,
     punteo_minimo INT NOT NULL DEFAULT 600 ,
     completo INT NOT NULL DEFAULT 100,
-    completo_optimo INT NOT NULL DEFAULT 50,
+    completo_optimo INT NOT NUL	L DEFAULT 50,
     completo_eficiente DECIMAL (10,2) DEFAULT 0.5,
     cancelado INT NOT NULL DEFAULT 30 ,
     no_entregado INT NOT NULL DEFAULT 50

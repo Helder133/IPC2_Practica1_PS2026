@@ -15,11 +15,11 @@ public class UsuarioDAO implements CRUD<Usuario> {
     private static final String INSERTAR = "INSERT INTO usuario (sucursal_id, nombre, email, contrasena, rol) VALUES (?,?,?,?,?)";
     private static final String ACTUALIZAR_SIN_CONTRASENA = "UPDATE usuario SET sucursal_id = ?, nombre = ?, email = ?, rol = ? WHERE usuario_id = ?";
     private static final String ACTUALIZAR_CON_CONTRASENA = "UPDATE usuario SET sucursal_id = ?, nombre = ?, email = ?, contrasena = ?, rol = ? WHERE usuario_id = ?";
-    private static final String OBTENER_POR_ID = "SELECT * FROM usuario WHERE usuario_id = ?";
-    private static final String OBTENER_TODO = "SELECT * FROM usuario";
+    private static final String OBTENER_POR_ID = "SELECT u.*, s.nombre AS nombre_sucursal FROM usuario AS u LEFT JOIN sucursal AS s ON u.sucursal_id = s.sucursal_id WHERE usuario_id = ?";
+    private static final String OBTENER_TODO = "SELECT u.*, s.nombre AS nombre_sucursal FROM usuario AS u LEFT JOIN sucursal AS s ON u.sucursal_id = s.sucursal_id";
     private static final String DESACTIVAR_ACTIVAR_USUARIO = "UPDATE usuario SET estado = NOT estado WHERE usuario_id = ?";
     //private static final String ACTIVAR_USUARIO = "UPDATE usuario SET estado = 1 WHERE usuario_id = ?";
-    private static final String LOGIN = "SELECT * FROM usuario WHERE email = ? AND contrasena = ? AND estado = 1";
+    private static final String LOGIN = "SELECT u.*, s.nombre AS nombre_sucursal FROM usuario AS u LEFT JOIN sucursal AS s ON u.sucursal_id = s.sucursal_id WHERE email = ? AND contrasena = ? AND estado = 1";
     private static final String VALIDAR_EMAIL = "SELECT usuario_id FROM usuario WHERE email = ?";
     private static final String VALIDAR_EMAIL_ACTUALIZADO = "SELECT usuario_id FROM usuario WHERE email = ? AND usuario_id <> ?";
 
@@ -157,6 +157,7 @@ public class UsuarioDAO implements CRUD<Usuario> {
                 EnumUsuario.valueOf(resultSet.getString("rol")));
         usuario.setUsuario_id(resultSet.getInt("usuario_id"));
         usuario.setEstado(resultSet.getBoolean("estado"));
+        usuario.setNombreSucursal(resultSet.getString("nombre_sucursal"));
         return usuario;
     }
 
