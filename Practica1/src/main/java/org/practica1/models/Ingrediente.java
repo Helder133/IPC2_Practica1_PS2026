@@ -29,4 +29,9 @@ public class Ingrediente {
     public boolean isValid() {
         return StringUtils.isNotBlank(nombre);
     }
+
+    @Override
+    public String toString() {
+        return nombre;
+    }
 }

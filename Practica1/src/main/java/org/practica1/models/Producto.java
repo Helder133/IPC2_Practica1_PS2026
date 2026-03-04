@@ -5,10 +5,10 @@ import org.apache.commons.lang3.StringUtils;
 public class Producto {
     private int productoID;
     private String nombre;
-    private int timepoBaseDePreparacion;
+    private int tiempoBaseDePreparacion;
 
-    public Producto(int timepoBaseDePreparacion, String nombre) {
-        this.timepoBaseDePreparacion = timepoBaseDePreparacion;
+    public Producto(int tiempoBaseDePreparacion, String nombre) {
+        this.tiempoBaseDePreparacion = tiempoBaseDePreparacion;
         this.nombre = nombre;
     }
 
@@ -28,15 +28,20 @@ public class Producto {
         this.nombre = nombre;
     }
 
-    public int getTimepoBaseDePreparacion() {
-        return timepoBaseDePreparacion;
+    public int getTiempoBaseDePreparacion() {
+        return tiempoBaseDePreparacion;
     }
 
-    public void setTimepoBaseDePreparacion(int timepoBaseDePreparacion) {
-        this.timepoBaseDePreparacion = timepoBaseDePreparacion;
+    public void setTiempoBaseDePreparacion(int tiempoBaseDePreparacion) {
+        this.tiempoBaseDePreparacion = tiempoBaseDePreparacion;
     }
 
     public boolean isValid() {
         return StringUtils.isNotBlank(nombre);
+    }
+
+    @Override
+    public String toString() {
+        return nombre;
     }
 }

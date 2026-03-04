@@ -17,7 +17,7 @@ public class IngredienteDAO implements CRUD<Ingrediente> {
     private static final String ACTUALIZAR = "UPDATE ingrediente SET nombre = ? WHERE ingrediente_id = ?";
     private static final String OBTENER_TODO = "SELECT * FROM ingrediente";
     private static final String OBTENER_POR_ID = "SELECT * FROM ingrediente WHERE ingrediente_id = ?";
-    private static final String ELIMINAR = "DELETE FROM ingrediente WHERE ingrediente_id = ?";
+    private static final String ELIMINAR = "DELETE FROM ingrediente WHERE ingrediente_id = ?"; //se podra eliminar si no esta relacionado con un producto
     private static final String EXISTE_NOMBRE = "SELECT ingrediente_id FROM ingrediente WHERE nombre = ?";
     private static final String VALIDAR_NOMBRE_ACTUALIZAR = "SELECT ingrediente_id FROM ingrediente WHERE nombre = ? AND ingrediente_id <> ?";
 
