@@ -6,6 +6,7 @@ import org.practica1.models.Producto;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.List;
 
 public class AdminTiendaFrame extends JFrame {
     // INGREDIENTES ---
@@ -40,7 +41,7 @@ public class AdminTiendaFrame extends JFrame {
 
     public AdminTiendaFrame() {
         setTitle("Pizza Express Tycoon - Administrador de Tienda (Gestión Global)");
-        setSize(900, 600);
+        setSize(1000, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -107,7 +108,7 @@ public class AdminTiendaFrame extends JFrame {
         tablaIngredientes = new JTable(modeloIngredientes);
         tablaIngredientes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scroll = new JScrollPane(tablaIngredientes);
-        scroll.setBounds(300, 20, 550, 480);
+        scroll.setBounds(330, 20, 550, 480);
         panel.add(scroll);
 
         // Evento visual para llenar el form al hacer clic
@@ -117,10 +118,11 @@ public class AdminTiendaFrame extends JFrame {
             }
         });
 
+        btnLimpiarIngrediente.addActionListener(e -> limpiarFormIngrediente());
+
         return panel;
     }
 
-    // --- Ingredientes ---
     public String getNombreIngrediente() {
         return txtNombreIngrediente.getText().trim();
     }
@@ -138,16 +140,14 @@ public class AdminTiendaFrame extends JFrame {
         return btnEliminarIngrediente;
     }
 
-    public JButton getBtnLimpiarIngrediente() {
-        return btnLimpiarIngrediente;
-    }
-
-    public DefaultTableModel getModeloIngredientes() {
-        return modeloIngredientes;
-    }
-
-    public JTable getTablaIngredientes() {
-        return tablaIngredientes;
+    public void actualizarTablaIngrediente(List<Ingrediente> list) {
+        modeloIngredientes.setRowCount(0);
+        for (Ingrediente i : list) {
+            modeloIngredientes.addRow(new Object[]{
+                    i.getIngredienteId(),
+                    i.getNombre()
+            });
+        }
     }
 
     public void limpiarFormIngrediente() {
@@ -215,7 +215,7 @@ public class AdminTiendaFrame extends JFrame {
         tablaProductos = new JTable(modeloProductos);
         tablaProductos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scroll = new JScrollPane(tablaProductos);
-        scroll.setBounds(300, 20, 550, 480);
+        scroll.setBounds(330, 20, 550, 480);
         panel.add(scroll);
 
         // Evento visual
@@ -226,6 +226,8 @@ public class AdminTiendaFrame extends JFrame {
                 jsTiempoPreparacion.setValue(Integer.parseInt(tablaProductos.getValueAt(fila, 2).toString()));
             }
         });
+
+        btnLimpiarProducto.addActionListener(e -> limpiarFormProducto());
 
         return panel;
     }
@@ -252,16 +254,14 @@ public class AdminTiendaFrame extends JFrame {
         return btnEliminarProducto;
     }
 
-    public JButton getBtnLimpiarProducto() {
-        return btnLimpiarProducto;
-    }
-
-    public DefaultTableModel getModeloProductos() {
-        return modeloProductos;
-    }
-
-    public JTable getTablaProductos() {
-        return tablaProductos;
+    public void actualizarTablaProducto(List<Producto> list) {
+        modeloProductos.setRowCount(0);
+        for (Producto p : list) {
+            modeloProductos.addRow(new Object[]{
+                    p.getProductoID(),
+                    p.getNombre(),
+                    p.getTiempoBaseDePreparacion()});
+        }
     }
 
     public void limpiarFormProducto() {
@@ -324,7 +324,7 @@ public class AdminTiendaFrame extends JFrame {
         };
         tablaReceta = new JTable(modeloReceta);
         JScrollPane scroll = new JScrollPane(tablaReceta);
-        scroll.setBounds(300, 20, 550, 480);
+        scroll.setBounds(380, 20, 550, 480);
         panel.add(scroll);
 
         return panel;
@@ -347,13 +347,6 @@ public class AdminTiendaFrame extends JFrame {
         return btnQuitarIngredienteReceta;
     }
 
-    public DefaultTableModel getModeloReceta() {
-        return modeloReceta;
-    }
-
-    public JTable getTablaReceta() {
-        return tablaReceta;
-    }
 
     // Método global de mensajes
     public void mostrarMensaje(String msg, String titulo, int tipo) {

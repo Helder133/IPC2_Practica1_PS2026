@@ -2,10 +2,12 @@ package org.practica1.controllers;
 
 import org.apache.commons.lang3.StringUtils;
 import org.practica1.dao.ConfiguracionDAO;
+import org.practica1.dao.IngredienteDAO;
 import org.practica1.dao.SucursalDAO;
 import org.practica1.dao.UsuarioDAO;
 import org.practica1.models.EnumUsuario;
 import org.practica1.models.Usuario;
+import org.practica1.views.AdminTiendaFrame;
 import org.practica1.views.LoginFrame;
 import org.practica1.views.SuperAdminFrame;
 
@@ -62,7 +64,14 @@ public class LoginController implements ActionListener {
                     superAdminFrame.setVisible(true);
                     vista.dispose();
                 } else if (user.getRol().equals(EnumUsuario.ADMIN_TIENDA)) {
-                    vista.mostrarMensaje("Pantalla de Admin de Tienda en construcción...", "Info", JOptionPane.INFORMATION_MESSAGE);
+                    AdminTiendaFrame adminTiendaFrame = new AdminTiendaFrame();
+
+                    IngredienteDAO ingredienteDAO = new IngredienteDAO();
+
+                    IngredienteController ingredienteController = new IngredienteController(adminTiendaFrame,ingredienteDAO);
+
+                    adminTiendaFrame.setVisible(true);
+                    vista.dispose();
                 } else {
                     vista.mostrarMensaje("Pantalla de Jugador en construcción...", "Info", JOptionPane.INFORMATION_MESSAGE);
                 }
