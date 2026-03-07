@@ -45,6 +45,8 @@ public class SuperAdminFrame extends JFrame {
     private JSpinner jsNoEntregado;
     private JButton btnGuardarConfig;
 
+    private JMenuItem itemCerrarSesion;
+
     private Font titulo = new Font("Arial", Font.BOLD, 18);
     private Font principal = new Font("Helvetica", Font.BOLD, 14);
     private Font secundario = new Font("Helvetica", Font.PLAIN, 13);
@@ -73,6 +75,19 @@ public class SuperAdminFrame extends JFrame {
         tabbedPane.addTab("Gestión del sistema", null, panelConfig, "Administrar el sistema");
 
         add(tabbedPane);
+
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menuCuenta = new JMenu("Cuenta");
+        itemCerrarSesion = new JMenuItem("Cerrar sesión");
+        itemCerrarSesion.setForeground(Color.RED);
+        menuCuenta.add(itemCerrarSesion);
+        menuBar.add(menuCuenta);
+        this.setJMenuBar(menuBar);
+
+    }
+
+    public JMenuItem getItemCerrarSesion() {
+        return itemCerrarSesion;
     }
 
     // Toda la parte de la vista que esta relacionado con sucursal
@@ -302,7 +317,7 @@ public class SuperAdminFrame extends JFrame {
 
         btnLimpiarUsuario.addActionListener(e -> limpiarFormularioUsuario());
 
-        //Tabla donde se van ha mostrar los usuarios
+        //Tabla donde se van a mostrar los usuarios
         String[] columnas = {"Id", "Nombre", "Email", "Rol", "Id Suc", "Estado"};
         modeloUsuarios = new DefaultTableModel(columnas, 0) {
             @Override

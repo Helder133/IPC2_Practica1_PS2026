@@ -33,8 +33,8 @@ public class UsuarioController implements ActionListener {
 
     private void cargarDependencia() {
         try {
-            List<Sucursal> sucursals = sucursalDAO.obtenerTodo();
-            vista.cargarComboSucursales(sucursals);
+            List<Sucursal> sucursales = sucursalDAO.obtenerTodo();
+            vista.cargarComboSucursales(sucursales);
 
             cargarTabla();
         } catch (SQLException e) {
@@ -119,7 +119,7 @@ public class UsuarioController implements ActionListener {
             vista.limpiarFormularioUsuario();
             cargarTabla();
         } catch (SQLException e) {
-
+            vista.mostrarMensaje("Error de BD: " + e.getMessage(), "Error Crítico", JOptionPane.ERROR_MESSAGE);
         }
     }
 

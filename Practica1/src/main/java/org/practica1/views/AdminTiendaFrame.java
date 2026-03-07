@@ -34,6 +34,8 @@ public class AdminTiendaFrame extends JFrame {
     private JTable tablaReceta;
     private DefaultTableModel modeloReceta;
 
+    private JMenuItem itemCerrarSesion;
+
     private Font titulo = new Font("Arial", Font.BOLD, 18);
     private Font principal = new Font("Helvetica", Font.BOLD, 14);
     private Font secundario = new Font("Helvetica", Font.PLAIN, 13);
@@ -57,6 +59,18 @@ public class AdminTiendaFrame extends JFrame {
         tabbedPane.addTab("3. Armar Recetas", null, crearPanelRecetas(), "Asignar ingredientes a las pizzas");
 
         this.add(tabbedPane);
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menuCuenta = new JMenu("Cuenta");
+        itemCerrarSesion = new JMenuItem("Cerrar sesión");
+        itemCerrarSesion.setForeground(Color.RED);
+        menuCuenta.add(itemCerrarSesion);
+        menuBar.add(menuCuenta);
+        this.setJMenuBar(menuBar);
+
+    }
+
+    public JMenuItem getItemCerrarSesion() {
+        return itemCerrarSesion;
     }
 
     // INGREDIENTES
@@ -241,6 +255,10 @@ public class AdminTiendaFrame extends JFrame {
         return (Integer) jsTiempoPreparacion.getValue();
     }
 
+    public void setJsTiempoPreparacion(int tiempo) {
+        this.jsTiempoPreparacion.setValue(tiempo);
+    }
+
     public int getIdProductoSeleccionado() {
         int fila = tablaProductos.getSelectedRow();
         return (fila == -1) ? 0 : (int) tablaProductos.getValueAt(fila, 0);
@@ -335,10 +353,6 @@ public class AdminTiendaFrame extends JFrame {
         return cbxProductoReceta;
     }
 
-    public JComboBox<Ingrediente> getCbxIngredienteReceta() {
-        return cbxIngredienteReceta;
-    }
-
     public JButton getBtnAgregarIngredienteReceta() {
         return btnAgregarIngredienteReceta;
     }
@@ -347,6 +361,42 @@ public class AdminTiendaFrame extends JFrame {
         return btnQuitarIngredienteReceta;
     }
 
+    public void actualizarTablaReceta(List<Ingrediente> list) {
+        modeloReceta.setRowCount(0);
+        for (Ingrediente i : list) {
+            modeloReceta.addRow(new Object[]{
+                    i.getIngredienteId(),
+                    i.getNombre()
+            });
+        }
+    }
+
+    public void cargarCombosProducto(List<Producto> list) {
+        cbxProductoReceta.removeAllItems();
+        for (Producto p : list) {
+            cbxProductoReceta.addItem(p);
+        }
+    }
+
+    public void cargarCombosIngrediente(List<Ingrediente> list) {
+        cbxIngredienteReceta.removeAllItems();
+        for (Ingrediente i : list) {
+            cbxIngredienteReceta.addItem(i);
+        }
+    }
+
+    public Producto productoSeleccionado() {
+        return (Producto) cbxProductoReceta.getSelectedItem();
+    }
+
+    public Ingrediente ingredienteSeleccionado() {
+        return (Ingrediente) cbxIngredienteReceta.getSelectedItem();
+    }
+
+    public int getIdProductoIngredienteSeleccionado() {
+        int fila = tablaReceta.getSelectedRow();
+        return (fila == -1) ? 0 : (int) tablaReceta.getValueAt(fila, 0);
+    }
 
     // Método global de mensajes
     public void mostrarMensaje(String msg, String titulo, int tipo) {

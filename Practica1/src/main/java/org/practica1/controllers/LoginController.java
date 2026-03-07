@@ -1,10 +1,7 @@
 package org.practica1.controllers;
 
 import org.apache.commons.lang3.StringUtils;
-import org.practica1.dao.ConfiguracionDAO;
-import org.practica1.dao.IngredienteDAO;
-import org.practica1.dao.SucursalDAO;
-import org.practica1.dao.UsuarioDAO;
+import org.practica1.dao.*;
 import org.practica1.models.EnumUsuario;
 import org.practica1.models.Usuario;
 import org.practica1.views.AdminTiendaFrame;
@@ -49,26 +46,15 @@ public class LoginController implements ActionListener {
             if (usuarioOpt.isPresent()) {
                 Usuario user = usuarioOpt.get();
                 vista.mostrarMensaje("Bienvenido " + user.getNombre(), "Login Exitoso", JOptionPane.INFORMATION_MESSAGE);
-
+                //Super Admin
                 if (user.getRol().equals(EnumUsuario.SUPER_ADMIN)) {
-                    SuperAdminFrame superAdminFrame = new SuperAdminFrame();
-
-                    SucursalDAO sucursalDAO = new SucursalDAO();
-                    UsuarioDAO usuarioDao = new UsuarioDAO();
-                    ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
-
-                    SucursalController sucursalController = new SucursalController(superAdminFrame,sucursalDAO);
-                    UsuarioController usuarioController = new UsuarioController(superAdminFrame,usuarioDao,sucursalDAO);
-                    ConfiguracionController configuracionController = new ConfiguracionController(superAdminFrame,configuracionDAO);
+                    SuperAdminFrame superAdminFrame = getSuperAdminFrame();
 
                     superAdminFrame.setVisible(true);
                     vista.dispose();
+                    //Admin Tienda
                 } else if (user.getRol().equals(EnumUsuario.ADMIN_TIENDA)) {
-                    AdminTiendaFrame adminTiendaFrame = new AdminTiendaFrame();
-
-                    IngredienteDAO ingredienteDAO = new IngredienteDAO();
-
-                    IngredienteController ingredienteController = new IngredienteController(adminTiendaFrame,ingredienteDAO);
+                    AdminTiendaFrame adminTiendaFrame = getAdminTiendaFrame();
 
                     adminTiendaFrame.setVisible(true);
                     vista.dispose();
@@ -82,7 +68,36 @@ public class LoginController implements ActionListener {
 
         } catch (SQLException ex) {
             vista.mostrarMensaje("Error de conexión a la base de datos.", "Error Crítico", JOptionPane.ERROR_MESSAGE);
-            ex.printStackTrace();
         }
+    }
+
+    private static SuperAdminFrame getSuperAdminFrame() {
+        SuperAdminFrame superAdminFrame = new SuperAdminFrame();
+
+        SucursalDAO sucursalDAO = new SucursalDAO();
+        UsuarioDAO usuarioDao = new UsuarioDAO();
+        ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
+
+        SucursalController sucursalController = new SucursalController(superAdminFrame,sucursalDAO);
+        UsuarioController usuarioController = new UsuarioController(superAdminFrame,usuarioDao,sucursalDAO);
+        ConfiguracionController configuracionController = new ConfiguracionController(superAdminFrame,configuracionDAO);
+
+        CerrarSesionController cerrarSesionController = new CerrarSesionController(superAdminFrame);
+        return superAdminFrame;
+    }
+
+    private static AdminTiendaFrame getAdminTiendaFrame() {
+        AdminTiendaFrame adminTiendaFrame = new AdminTiendaFrame();
+
+        IngredienteDAO ingredienteDAO = new IngredienteDAO();
+        ProductoDAO productoDAO = new ProductoDAO();
+        ProductoIngredienteDAO productoIngredienteDAO = new ProductoIngredienteDAO();
+
+        IngredienteController ingredienteController = new IngredienteController(adminTiendaFrame,ingredienteDAO);
+        ProductoController productoController = new ProductoController(adminTiendaFrame, productoDAO, new ConfiguracionDAO());
+        ProductoIngredienteController productoIngredienteController = new ProductoIngredienteController(adminTiendaFrame,productoIngredienteDAO,productoDAO,ingredienteDAO);
+
+        CerrarSesionController cerrarSesionController = new CerrarSesionController(adminTiendaFrame);
+        return adminTiendaFrame;
     }
 }

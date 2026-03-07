@@ -12,8 +12,8 @@ import java.util.List;
 
 public class IngredienteController implements ActionListener {
 
-    private AdminTiendaFrame vista;
-    private IngredienteDAO dao;
+    private final AdminTiendaFrame vista;
+    private final IngredienteDAO dao;
 
     public IngredienteController(AdminTiendaFrame vista, IngredienteDAO dao) {
         this.vista = vista;
@@ -54,6 +54,10 @@ public class IngredienteController implements ActionListener {
 
         if (id == 0) {
             try {
+                if (dao.existeNombre(ingrediente.getNombre())) {
+                    vista.mostrarMensaje("Este nombre ya está registrado.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 dao.insertar(ingrediente);
                 vista.mostrarMensaje("Ingrediente creado.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             } catch (SQLException e) {
