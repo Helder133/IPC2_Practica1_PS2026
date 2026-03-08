@@ -2,6 +2,8 @@ package org.practica1.views;
 
 import org.practica1.models.Ingrediente;
 import org.practica1.models.Producto;
+import org.practica1.models.SucursalIngrediente;
+import org.practica1.models.SucursalProducto;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -34,6 +36,22 @@ public class AdminTiendaFrame extends JFrame {
     private JTable tablaReceta;
     private DefaultTableModel modeloReceta;
 
+    // PRODUCTOS LOCALES ---
+    private JComboBox<Producto> cbxProductoLocal;
+    private JButton btnAgregarProductoLocal;
+    private JButton btnCambiarEstadoProducto;
+    private JButton btnEliminarProductoLocal;
+    private JTable tablaProductosLocales;
+    private DefaultTableModel modeloProductosLocales;
+
+    //INGREDIENTES LOCALES --
+    private JComboBox<Ingrediente> cbxIngredienteLocal;
+    private JButton btnAgregarIngredienteLocal;
+    private JButton btnCambiarEstadoIngrediente;
+    private JButton btnEliminarIngredienteLocal;
+    private JTable tablaIngredientesLocales;
+    private DefaultTableModel modeloIngredientesLocales;
+
     private JMenuItem itemCerrarSesion;
 
     private Font titulo = new Font("Arial", Font.BOLD, 18);
@@ -57,6 +75,8 @@ public class AdminTiendaFrame extends JFrame {
         tabbedPane.addTab("1. Catálogo de Ingredientes", null, crearPanelIngredientes(), "Crear ingredientes base");
         tabbedPane.addTab("2. Catálogo de Pizzas", null, crearPanelProductos(), "Crear pizzas base");
         tabbedPane.addTab("3. Armar Recetas", null, crearPanelRecetas(), "Asignar ingredientes a las pizzas");
+        tabbedPane.addTab("4. Menú Local", null, crearPanelMenuLocal(), "Pizzas de esta tienda");
+        tabbedPane.addTab("5. Stock Local", null, crearPanelStockLocal(), "Ingredientes de esta tienda");
 
         this.add(tabbedPane);
         JMenuBar menuBar = new JMenuBar();
@@ -396,6 +416,196 @@ public class AdminTiendaFrame extends JFrame {
     public int getIdProductoIngredienteSeleccionado() {
         int fila = tablaReceta.getSelectedRow();
         return (fila == -1) ? 0 : (int) tablaReceta.getValueAt(fila, 0);
+    }
+
+    //Producto locales
+    private JPanel crearPanelMenuLocal() {
+        JPanel panel = new JPanel(null);
+        panel.setBackground(new Color(30, 30, 30));
+
+        JLabel lblTitulo = new JLabel("Menú de mi Sucursal");
+        lblTitulo.setFont(titulo);
+        lblTitulo.setForeground(new Color(241, 196, 15));
+        lblTitulo.setBounds(20, 20, 300, 30);
+        panel.add(lblTitulo);
+
+        JLabel lblProd = new JLabel("Añadir Pizza del Catálogo Global:");
+        lblProd.setFont(principal);
+        lblProd.setForeground(Color.LIGHT_GRAY);
+        lblProd.setBounds(20, 70, 250, 20);
+        panel.add(lblProd);
+
+        cbxProductoLocal = new JComboBox<>();
+        cbxProductoLocal.setBounds(20, 90, 250, 30);
+        cbxProductoLocal.setFont(secundario);
+        panel.add(cbxProductoLocal);
+
+        btnAgregarProductoLocal = new JButton("Agregar al Menú Local");
+        btnAgregarProductoLocal.setBackground(new Color(46, 204, 113));
+        btnAgregarProductoLocal.setForeground(Color.WHITE);
+        btnAgregarProductoLocal.setBounds(20, 140, 250, 35);
+        btnAgregarProductoLocal.setFont(principal);
+        panel.add(btnAgregarProductoLocal);
+
+        btnCambiarEstadoProducto = new JButton("Activar / Desactivar Venta");
+        btnCambiarEstadoProducto.setBackground(new Color(243, 156, 18)); // Naranja
+        btnCambiarEstadoProducto.setForeground(Color.WHITE);
+        btnCambiarEstadoProducto.setBounds(20, 185, 250, 35);
+        btnCambiarEstadoProducto.setFont(principal);
+        panel.add(btnCambiarEstadoProducto);
+
+        btnEliminarProductoLocal = new JButton("Eliminar");
+        btnEliminarProductoLocal.setBackground(new Color(231, 76, 60)); // Rojo
+        btnEliminarProductoLocal.setForeground(Color.WHITE);
+        btnEliminarProductoLocal.setBounds(20, 230, 250, 35);
+        btnEliminarProductoLocal.setFont(principal);
+        panel.add(btnEliminarProductoLocal);
+
+        modeloProductosLocales = new DefaultTableModel(new String[]{"ID Producto", "Nombre Pizza", "Estado (Activo)"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        tablaProductosLocales = new JTable(modeloProductosLocales);
+        tablaProductosLocales.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane scroll = new JScrollPane(tablaProductosLocales);
+        scroll.setBounds(300, 20, 550, 480);
+        panel.add(scroll);
+
+        return panel;
+    }
+
+    public void cargarCombosProductoLocal (List<Producto> list) {
+        cbxProductoLocal.removeAllItems();
+        for (Producto p : list) {
+            cbxProductoLocal.addItem(p);
+        }
+    }
+
+    public Producto productoLocalSeleccionado() {
+        return (Producto) cbxProductoLocal.getSelectedItem();
+    }
+
+    public void actualizarTablaProductoLocal(List<SucursalProducto> list) {
+        modeloProductosLocales.setRowCount(0);
+        for (SucursalProducto p : list) {
+            modeloProductosLocales.addRow(new Object[]{
+                    p.getProductoId(),
+                    p.getNombreProducto(),
+                    p.isEstado() ? "Activo" : "Inactivo"
+            });
+        }
+    }
+
+    public int getIdProductoLocalSeleccionado() {
+        int fila = tablaProductosLocales.getSelectedRow();
+        return (fila == -1) ? 0 : (int) tablaProductosLocales.getValueAt(fila, 0);
+    }
+
+    public JButton getBtnAgregarProductoLocal() {
+        return btnAgregarProductoLocal;
+    }
+
+    public JButton getBtnCambiarEstadoProducto() {
+        return btnCambiarEstadoProducto;
+    }
+
+    public JButton getBtnEliminarProductoLocal() {
+        return btnEliminarProductoLocal;
+    }
+
+    //Ingredientes Locales
+    private JPanel crearPanelStockLocal() {
+        JPanel panel = new JPanel(null);
+        panel.setBackground(new Color(30, 30, 30));
+
+        JLabel lblTitulo = new JLabel("Inventario de mi Sucursal");
+        lblTitulo.setFont(new Font("Arial", Font.BOLD, 18));
+        lblTitulo.setForeground(new Color(241, 196, 15));
+        lblTitulo.setBounds(20, 20, 300, 30);
+        panel.add(lblTitulo);
+
+        JLabel lblIng = new JLabel("Añadir Ingrediente del Catálogo:");
+        lblIng.setFont(new Font("Helvetica", Font.BOLD, 14));
+        lblIng.setForeground(Color.LIGHT_GRAY);
+        lblIng.setBounds(20, 70, 250, 20);
+        panel.add(lblIng);
+
+        cbxIngredienteLocal = new JComboBox<>();
+        cbxIngredienteLocal.setBounds(20, 90, 250, 30);
+        panel.add(cbxIngredienteLocal);
+
+        btnAgregarIngredienteLocal = new JButton("Agregar al Stock Local");
+        btnAgregarIngredienteLocal.setBackground(new Color(46, 204, 113));
+        btnAgregarIngredienteLocal.setForeground(Color.WHITE);
+        btnAgregarIngredienteLocal.setBounds(20, 140, 250, 35);
+        panel.add(btnAgregarIngredienteLocal);
+
+        btnCambiarEstadoIngrediente = new JButton("Hay / No Hay Stock");
+        btnCambiarEstadoIngrediente.setBackground(new Color(243, 156, 18));
+        btnCambiarEstadoIngrediente.setForeground(Color.WHITE);
+        btnCambiarEstadoIngrediente.setBounds(20, 185, 250, 35);
+        panel.add(btnCambiarEstadoIngrediente);
+
+        btnEliminarIngredienteLocal = new JButton("Eliminar");
+        btnEliminarIngredienteLocal.setBackground(new Color(231, 76, 60));
+        btnEliminarIngredienteLocal.setForeground(Color.WHITE);
+        btnEliminarIngredienteLocal.setBounds(20, 230, 250, 35);
+        panel.add(btnEliminarIngredienteLocal);
+
+        modeloIngredientesLocales = new DefaultTableModel(new String[]{"ID Ingrediente", "Nombre", "En Stock"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        tablaIngredientesLocales = new JTable(modeloIngredientesLocales);
+        tablaIngredientesLocales.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane scroll = new JScrollPane(tablaIngredientesLocales);
+        scroll.setBounds(300, 20, 550, 480);
+        panel.add(scroll);
+
+        return panel;
+    }
+
+    public Ingrediente ingredienteLocalSeleccionado() {
+        return (Ingrediente) cbxIngredienteLocal.getSelectedItem();
+    }
+
+    public void cargarCombosIngredientesLocales(List<Ingrediente> list) {
+        cbxIngredienteLocal.removeAllItems();
+        for (Ingrediente i : list) {
+            cbxIngredienteLocal.addItem(i);
+        }
+    }
+
+    public void actualizarTablaIngredienteLocal (List<SucursalIngrediente> list) {
+        modeloIngredientesLocales.setRowCount(0);
+        for (SucursalIngrediente i : list) {
+            modeloIngredientesLocales.addRow(new Object[]{
+                i.getIngredienteId(),
+                i.getNombreIngrediente(),
+                i.isEstado() ? "Activo" : "Inactivo"
+            });
+        }
+    }
+
+    public int getIdIngredienteLocalSeleccionado() {
+        int fila = tablaIngredientesLocales.getSelectedRow();
+        return (fila == -1) ? 0 : (int) tablaIngredientesLocales.getValueAt(fila, 0);
+    }
+
+    public JButton getBtnAgregarIngredienteLocal() {
+        return btnAgregarIngredienteLocal;
+    }
+
+    public JButton getBtnCambiarEstadoIngrediente() {
+        return btnCambiarEstadoIngrediente;
+    }
+
+    public JButton getBtnEliminarIngredienteLocal() {
+        return btnEliminarIngredienteLocal;
     }
 
     // Método global de mensajes

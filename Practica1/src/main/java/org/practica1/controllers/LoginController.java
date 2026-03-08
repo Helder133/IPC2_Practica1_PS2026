@@ -54,7 +54,7 @@ public class LoginController implements ActionListener {
                     vista.dispose();
                     //Admin Tienda
                 } else if (user.getRol().equals(EnumUsuario.ADMIN_TIENDA)) {
-                    AdminTiendaFrame adminTiendaFrame = getAdminTiendaFrame();
+                    AdminTiendaFrame adminTiendaFrame = getAdminTiendaFrame(user.getSucursal_id());
 
                     adminTiendaFrame.setVisible(true);
                     vista.dispose();
@@ -86,16 +86,20 @@ public class LoginController implements ActionListener {
         return superAdminFrame;
     }
 
-    private static AdminTiendaFrame getAdminTiendaFrame() {
+    private static AdminTiendaFrame getAdminTiendaFrame(int sucursalId) {
         AdminTiendaFrame adminTiendaFrame = new AdminTiendaFrame();
 
         IngredienteDAO ingredienteDAO = new IngredienteDAO();
         ProductoDAO productoDAO = new ProductoDAO();
         ProductoIngredienteDAO productoIngredienteDAO = new ProductoIngredienteDAO();
+        SucursalIngredienteDAO sucursalIngredienteDAO = new SucursalIngredienteDAO();
+        SucursalProductoDAO sucursalProductoDAO = new SucursalProductoDAO();
 
         IngredienteController ingredienteController = new IngredienteController(adminTiendaFrame,ingredienteDAO);
         ProductoController productoController = new ProductoController(adminTiendaFrame, productoDAO, new ConfiguracionDAO());
         ProductoIngredienteController productoIngredienteController = new ProductoIngredienteController(adminTiendaFrame,productoIngredienteDAO,productoDAO,ingredienteDAO);
+        SucursalIngredienteController sucursalIngredienteController = new SucursalIngredienteController(sucursalId,adminTiendaFrame,sucursalIngredienteDAO,ingredienteDAO);
+        SucursalProductoController sucursalProductoController = new SucursalProductoController(sucursalId,adminTiendaFrame,sucursalProductoDAO,productoDAO);
 
         CerrarSesionController cerrarSesionController = new CerrarSesionController(adminTiendaFrame);
         return adminTiendaFrame;
