@@ -5,6 +5,7 @@ import org.practica1.dao.*;
 import org.practica1.models.EnumUsuario;
 import org.practica1.models.Usuario;
 import org.practica1.views.AdminTiendaFrame;
+import org.practica1.views.JugadorFrame;
 import org.practica1.views.LoginFrame;
 import org.practica1.views.SuperAdminFrame;
 
@@ -49,17 +50,17 @@ public class LoginController implements ActionListener {
                 //Super Admin
                 if (user.getRol().equals(EnumUsuario.SUPER_ADMIN)) {
                     SuperAdminFrame superAdminFrame = getSuperAdminFrame();
-
                     superAdminFrame.setVisible(true);
                     vista.dispose();
                     //Admin Tienda
                 } else if (user.getRol().equals(EnumUsuario.ADMIN_TIENDA)) {
                     AdminTiendaFrame adminTiendaFrame = getAdminTiendaFrame(user.getSucursal_id());
-
                     adminTiendaFrame.setVisible(true);
                     vista.dispose();
                 } else {
-                    vista.mostrarMensaje("Pantalla de Jugador en construcción...", "Info", JOptionPane.INFORMATION_MESSAGE);
+                    JugadorFrame jugadorFrame = getJugadorFrame(user);
+                    jugadorFrame.setVisible(true);
+                    vista.dispose();
                 }
 
             } else {
@@ -71,6 +72,14 @@ public class LoginController implements ActionListener {
         }
     }
 
+    private JugadorFrame getJugadorFrame(Usuario user) {
+        JugadorFrame jugadorFrame = new JugadorFrame();
+
+        JugadorController jugadorController = new JugadorController(jugadorFrame, user, new PartidaDAO(), new ConfiguracionDAO(), new PedidoDAO(), new DetallePedidoDAO(), new HistorialPedidoDAO(), new SucursalProductoDAO(), new ProductoIngredienteDAO(), new SucursalIngredienteDAO());
+        CerrarSesionController cerrarSesionController = new CerrarSesionController(jugadorFrame);
+        return jugadorFrame;
+    }
+
     private static SuperAdminFrame getSuperAdminFrame() {
         SuperAdminFrame superAdminFrame = new SuperAdminFrame();
 
@@ -78,9 +87,9 @@ public class LoginController implements ActionListener {
         UsuarioDAO usuarioDao = new UsuarioDAO();
         ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
 
-        SucursalController sucursalController = new SucursalController(superAdminFrame,sucursalDAO);
-        UsuarioController usuarioController = new UsuarioController(superAdminFrame,usuarioDao,sucursalDAO);
-        ConfiguracionController configuracionController = new ConfiguracionController(superAdminFrame,configuracionDAO);
+        SucursalController sucursalController = new SucursalController(superAdminFrame, sucursalDAO);
+        UsuarioController usuarioController = new UsuarioController(superAdminFrame, usuarioDao, sucursalDAO);
+        ConfiguracionController configuracionController = new ConfiguracionController(superAdminFrame, configuracionDAO);
 
         CerrarSesionController cerrarSesionController = new CerrarSesionController(superAdminFrame);
         return superAdminFrame;
@@ -95,11 +104,11 @@ public class LoginController implements ActionListener {
         SucursalIngredienteDAO sucursalIngredienteDAO = new SucursalIngredienteDAO();
         SucursalProductoDAO sucursalProductoDAO = new SucursalProductoDAO();
 
-        IngredienteController ingredienteController = new IngredienteController(adminTiendaFrame,ingredienteDAO);
+        IngredienteController ingredienteController = new IngredienteController(adminTiendaFrame, ingredienteDAO);
         ProductoController productoController = new ProductoController(adminTiendaFrame, productoDAO, new ConfiguracionDAO());
-        ProductoIngredienteController productoIngredienteController = new ProductoIngredienteController(adminTiendaFrame,productoIngredienteDAO,productoDAO,ingredienteDAO);
-        SucursalIngredienteController sucursalIngredienteController = new SucursalIngredienteController(sucursalId,adminTiendaFrame,sucursalIngredienteDAO,ingredienteDAO);
-        SucursalProductoController sucursalProductoController = new SucursalProductoController(sucursalId,adminTiendaFrame,sucursalProductoDAO,productoDAO);
+        ProductoIngredienteController productoIngredienteController = new ProductoIngredienteController(adminTiendaFrame, productoIngredienteDAO, productoDAO, ingredienteDAO);
+        SucursalIngredienteController sucursalIngredienteController = new SucursalIngredienteController(sucursalId, adminTiendaFrame, sucursalIngredienteDAO, ingredienteDAO);
+        SucursalProductoController sucursalProductoController = new SucursalProductoController(sucursalId, adminTiendaFrame, sucursalProductoDAO, productoDAO);
 
         CerrarSesionController cerrarSesionController = new CerrarSesionController(adminTiendaFrame);
         return adminTiendaFrame;

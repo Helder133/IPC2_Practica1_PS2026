@@ -2,6 +2,7 @@ package org.practica1.controllers;
 
 import org.practica1.dao.UsuarioDAO;
 import org.practica1.views.AdminTiendaFrame;
+import org.practica1.views.JugadorFrame;
 import org.practica1.views.LoginFrame;
 import org.practica1.views.SuperAdminFrame;
 
@@ -19,6 +20,11 @@ public class CerrarSesionController implements ActionListener {
     public CerrarSesionController(SuperAdminFrame superAdminFrame) {
         this.jFrame = superAdminFrame;
         superAdminFrame.getItemCerrarSesion().addActionListener(this);
+    }
+
+    public CerrarSesionController(JugadorFrame jugadorFrame) {
+        this.jFrame = jugadorFrame;
+        jugadorFrame.getItemCerrarSesion().addActionListener(this);
     }
 
     @Override
