@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS pedido (
     tiempo_limite INT NOT NULL ,
     fecha_creacion DATETIME NOT NULL ,
     fecha_entrega DATETIME ,
-    estado ENUM ('Recibido','Preparando','En_Horno','Lista/Entregado','Cancelado','No_Entregado') NOT NULL DEFAULT 'Recibido',
+    estado ENUM ('Recibido','Preparando','En_Horno','Lista_Y_Entregado','Cancelado','No_Entregado') NOT NULL DEFAULT 'Recibido',
     puntaje_obtenido INT DEFAULT 0,
     CONSTRAINT fk_partida1 FOREIGN KEY (partida_id) REFERENCES partida (partida_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -95,13 +95,13 @@ CREATE TABLE IF NOT EXISTS historial_pedido (
     historial_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT ,
     pedido_id INT NOT NULL ,
     fecha DATETIME NOT NULL ,
-    estado ENUM ('Recibido','Preparando','En_Horno','Lista/Entregado','Cancelado','No_Entregado') NOT NULL DEFAULT 'Recibido',
+    estado ENUM ('Recibido','Preparando','En_Horno','Lista_Y_Entregado','Cancelado','No_Entregado') NOT NULL DEFAULT 'Recibido',
     CONSTRAINT fk_pedido2 FOREIGN KEY (pedido_id) REFERENCES pedido (pedido_id) ON DELETE CASCADE  ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS configuracion_sistema (
     configuracion_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-    tiempo_preparacion INT NOT NULL DEFAULT 60, -- si un producto no dice su tiempo de preparacion, se usara este
+    tiempo_preparacion INT NOT NULL DEFAULT 60, 
     dificultad_nivel INT NOT NULL DEFAULT 10,
     punteo_minimo INT NOT NULL DEFAULT 600 ,
     completo INT NOT NULL DEFAULT 100,
@@ -110,4 +110,24 @@ CREATE TABLE IF NOT EXISTS configuracion_sistema (
     cancelado INT NOT NULL DEFAULT 30 ,
     no_entregado INT NOT NULL DEFAULT 50
 );
+
+SELECT pa.partida_id, pa.fecha_inicio, pa.fecha_fin, pa.nivel, pa.puntaje, COUNT(pe.pedido_id) AS total_pedidos FROM partida pa LEFT JOIN pedido pe ON pa.partida_id = pe.partida_id WHERE pa.usuario_id = 3 GROUP BY pa.partida_id, pa.fecha_inicio, pa.nivel, pa.puntaje ORDER BY pa.fecha_inicio DESC;
+
+SELECT u.nombre AS jugador, s.nombre AS sucursal, MAX(p.nivel) AS nivel_max, SUM(p.puntaje) AS puntos_totales 
+FROM partida p 
+JOIN usuario u ON p.usuario_id = u.usuario_id 
+JOIN sucursal s ON u.sucursal_id = s.sucursal_id 
+WHERE u.sucursal_id = ?
+GROUP BY u.usuario_id, u.nombre, s.nombre
+ORDER BY puntos_totales DESC;
+
+SELECT p.partida_id, u.nombre AS jugador, s.nombre AS sucursal, p.fecha_inicio, p.fecha_fin , p.nivel, p.puntaje 
+FROM partida p 
+JOIN usuario u ON p.usuario_id = u.usuario_id 
+JOIN sucursal s ON u.sucursal_id = s.sucursal_id 
+WHERE u.sucursal_id = ?
+ORDER BY p.fecha_inicio DESC;
+
+SELECT p.partida_id, u.nombre AS jugador, s.nombre AS sucursal, p.fecha_inicio, p.fecha_fin , p.nivel, p.puntaje FROM partida p JOIN usuario u ON p.usuario_id = u.usuario_id JOIN sucursal s ON u.sucursal_id = s.sucursal_id WHERE u.sucursal_id = ? ORDER BY p.fecha_inicio DESC;
+
 
