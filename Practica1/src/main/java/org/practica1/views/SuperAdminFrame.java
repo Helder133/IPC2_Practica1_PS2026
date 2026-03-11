@@ -1,5 +1,6 @@
 package org.practica1.views;
 
+import org.practica1.controllers.ReportesController;
 import org.practica1.models.Configuracion;
 import org.practica1.models.Sucursal;
 import org.practica1.models.Usuario;
@@ -47,6 +48,9 @@ public class SuperAdminFrame extends JFrame {
 
     private JMenuItem itemCerrarSesion;
 
+    private PanelReporteBase panelRanking;
+    private PanelReporteBase panelEstadisticas;
+
     private Font titulo = new Font("Arial", Font.BOLD, 18);
     private Font principal = new Font("Helvetica", Font.BOLD, 14);
     private Font secundario = new Font("Helvetica", Font.PLAIN, 13);
@@ -74,6 +78,12 @@ public class SuperAdminFrame extends JFrame {
         JPanel panelConfig = crearPanelConfig();
         tabbedPane.addTab("Gestión del sistema", null, panelConfig, "Administrar el sistema");
 
+        panelRanking = new PanelReporteBase("Ranking de Jugadores", new String[]{"Top Jugador", "Sucursal", "Nivel Máximo", "Puntaje Total"});
+        panelEstadisticas = new PanelReporteBase("Historial de Partidas", new String[]{"ID", "Jugador", "Sucursal", "Fecha Inicio", "Fecha Fin", "Nivel", "Puntos"});
+
+        tabbedPane.addTab("Ranking", panelRanking);
+        tabbedPane.addTab("Estadísticas", panelEstadisticas);
+
         add(tabbedPane);
 
         JMenuBar menuBar = new JMenuBar();
@@ -84,6 +94,14 @@ public class SuperAdminFrame extends JFrame {
         menuBar.add(menuCuenta);
         this.setJMenuBar(menuBar);
 
+    }
+
+    public PanelReporteBase getPanelRanking() {
+        return panelRanking;
+    }
+
+    public PanelReporteBase getPanelEstadisticas() {
+        return panelEstadisticas;
     }
 
     public JMenuItem getItemCerrarSesion() {

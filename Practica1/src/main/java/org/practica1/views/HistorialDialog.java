@@ -12,7 +12,7 @@ public class HistorialDialog extends JDialog {
 
     public HistorialDialog(JFrame parent) {
         super(parent, "Historial de Partidas", true); // true = Modal (Bloquea la ventana de atrás)
-        setSize(600, 400);
+        setSize(900, 400);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout());
 
@@ -21,7 +21,7 @@ public class HistorialDialog extends JDialog {
 
     private void inicializarComponentes() {
         // Configuramos las columnas de la tabla
-        String[] columnas = {"ID Partida", "Fecha de Juego", "Nivel Alcanzado", "Puntaje Final", "Pedidos Atendidos"};
+        String[] columnas = {"ID Partida", "Fecha de inicio del Juego","Fecha de Fin del Juego", "Nivel Alcanzado", "Puntaje Final", "Pedidos Atendidos"};
         modeloTabla = new DefaultTableModel(columnas, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {

@@ -5,10 +5,10 @@ import org.practica1.dao.*;
 import org.practica1.models.*;
 import org.practica1.views.HistorialDialog;
 import org.practica1.views.JugadorFrame;
-import org.practica1.views.LoginFrame;
 import org.practica1.views.PanelPedidoCard;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -33,11 +33,17 @@ public class JugadorController implements ActionListener {
     private final ProductoIngredienteDAO recetaDAO;
     private final SucursalIngredienteDAO inventarioLocalDAO;
 
+
     private Configuracion reglasJuego;
     private Partida partidaActual;
+    private Timer timerPartidaGlobal;
+    private int tiempoRestanteTurno = 150;
     private Timer timerGeneradorPedidos;
     private boolean nivel2 = false;
     private boolean nivel3 = false;
+    private int pedidosEntregados = 0;
+    private int pedidosCancelados = 0;
+    private int pedidosNoEntregados = 0;
 
     public JugadorController(JugadorFrame vista, Usuario jugador, PartidaDAO partidaDAO, ConfiguracionDAO configDAO, PedidoDAO pedidoDAO, DetallePedidoDAO detalleDAO, HistorialPedidoDAO historialDAO, SucursalProductoDAO menuLocalDAO, ProductoIngredienteDAO recetaDAO, SucursalIngredienteDAO inventarioLocalDAO) {
         this.vista = vista;
@@ -67,7 +73,6 @@ public class JugadorController implements ActionListener {
             if (optConfig.isPresent()) {
                 reglasJuego = optConfig.get();
             } else {
-                // Si el SuperAdmin no configuró nada, cargamos unos valores por defecto por seguridad
                 reglasJuego = new Configuracion(60, 10, 600, 100, 50, 0.5, 50, 30);
                 vista.mostrarMensaje("Advertencia: El sistema no tiene configuración. Se usarán reglas por defecto.", "Atención", JOptionPane.WARNING_MESSAGE);
             }
@@ -94,6 +99,7 @@ public class JugadorController implements ActionListener {
     }
 
     private void iniciarJuego() {
+        iniciarRelojGeneral();
         try {
             Partida nuevaPartida = new Partida(jugador.getUsuario_id(), jugador.getSucursal_id());
 
@@ -119,6 +125,7 @@ public class JugadorController implements ActionListener {
 
         if (timerGeneradorPedidos != null) {
             timerGeneradorPedidos.stop();
+            timerPartidaGlobal.stop();
         }
 
         try {
@@ -130,16 +137,78 @@ public class JugadorController implements ActionListener {
 
             vista.getBtnTerminarTurno().setEnabled(false);
             vista.getBtnIniciarPartida().setEnabled(true);
-            vista.mostrarMensaje("Turno terminado. Puntos finales: " + partidaActual.getPuntaje(), "Fin del Juego", JOptionPane.INFORMATION_MESSAGE);
+            String mensaje = "Turno terminado. Puntos finales: " + partidaActual.getPuntaje() + ". Nivel alcanzado: " + partidaActual.getNivel() + ". " +
+                    "Pedidos completados: "+pedidosEntregados+". Pedidos cancelados: "+pedidosCancelados+". Pedidos no entregados: "+pedidosNoEntregados+".";
+
+            vista.mostrarMensaje(mensaje, "Fin del Juego. ", JOptionPane.INFORMATION_MESSAGE);
 
             vista.getLblPuntaje().setText("Puntos: 0");
             vista.getLblNivel().setText("Nivel: 1");
-
+            vista.getLblTiempoGeneral().setText("2:30");
+            nivel2 = false;
+            nivel3 = false;
             this.partidaActual = null;
 
         } catch (SQLException ex) {
             vista.mostrarMensaje("Error al guardar el progreso: " + ex.getMessage(), "Error SQL", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void iniciarRelojGeneral() {
+        tiempoRestanteTurno = 150;
+        timerPartidaGlobal = new Timer(1000, e -> {
+            tiempoRestanteTurno--;
+
+            int minutos = tiempoRestanteTurno / 60;
+            int segundos = tiempoRestanteTurno % 60;
+            vista.getLblTiempoGeneral().setText(String.format("Turno: %02d:%02d", minutos, segundos));
+
+            if (tiempoRestanteTurno <= 60) {
+                vista.getLblTiempoGeneral().setForeground(java.awt.Color.RED);
+            }
+
+            if (tiempoRestanteTurno <= 0) {
+                finalizarTurnoPorTiempo();
+            }
+        });
+
+        timerPartidaGlobal.start();
+    }
+
+    private void finalizarTurnoPorTiempo() {
+        if (timerPartidaGlobal != null) timerPartidaGlobal.stop();
+        if (timerGeneradorPedidos != null) timerGeneradorPedidos.stop();
+
+        vista.mostrarMensajeFlotante("¡TIEMPO AGOTADO! Cerrando cocina...");
+
+        Component[] tarjetasActivas = vista.getPanelContenedorPedidos().getComponents();
+
+        for (Component comp : tarjetasActivas) {
+            if (comp instanceof PanelPedidoCard) {
+                PanelPedidoCard tarjeta = (PanelPedidoCard) comp;
+                Pedido pedidoPendiente = tarjeta.getPedido();
+
+                if (pedidoPendiente.getEstado() != EnumPedido.Lista_Y_Entregado &&
+                        pedidoPendiente.getEstado() != EnumPedido.Cancelado &&
+                        pedidoPendiente.getEstado() != EnumPedido.No_Entregado) {
+
+                    pedidoPendiente.setEstado(EnumPedido.No_Entregado);
+                    registrarHistorialEnBD(pedidoPendiente.getPedidoId(), EnumPedido.No_Entregado);
+                    pedidosNoEntregados ++;
+                    finalizarPedido(tarjeta, -reglasJuego.getNo_entregado());
+                }
+            }
+        }
+
+        vista.mostrarMensaje(
+                "¡El turno de 2.30 minutos ha finalizado!\n" +
+                        "Se penalizaron todos los pedidos que quedaron en preparación.\n\n" +
+                        "Puntaje Final: " + partidaActual.getPuntaje() + "\n" +
+                        "Nivel Alcanzado: " + partidaActual.getNivel(),
+                "Fin del Turno",
+                JOptionPane.INFORMATION_MESSAGE
+        );
+        terminarJuego();
     }
 
     private void arrancarGeneradorDePedidos() {
@@ -175,8 +244,7 @@ public class JugadorController implements ActionListener {
             if (nuevoPedido.getTiempoLimite() == 0) nuevoPedido.setTiempoLimite(reglasJuego.getTiempo_preparacion());
 
             if (nivel2) nuevoPedido.setTiempoLimite(nuevoPedido.getTiempoLimite() - reglasJuego.getDificultad_nivel());
-            if (nivel3)
-                nuevoPedido.setTiempoLimite(nuevoPedido.getTiempoLimite() - (reglasJuego.getDificultad_nivel() * 2));
+            if (nivel3) nuevoPedido.setTiempoLimite(nuevoPedido.getTiempoLimite() - (reglasJuego.getDificultad_nivel() * 2));
 
             int cantidad = rand.nextInt(5) + 1;
 
@@ -259,6 +327,7 @@ public class JugadorController implements ActionListener {
             pedido.setEstado(EnumPedido.Cancelado);
             registrarHistorialEnBD(pedido.getPedidoId(), EnumPedido.Cancelado);
             finalizarPedido(tarjeta, -reglasJuego.getCancelado());
+            pedidosCancelados ++;
         });
 
         tarjeta.getBtnSiguienteEtapa().addActionListener(e -> {
@@ -268,14 +337,14 @@ public class JugadorController implements ActionListener {
             int suerte = rand.nextInt(100) + 1;
 
             if (suerte <= probabilidadExito) {
-                avanzarEtapa(tarjeta, timerPedido, tiempo, pedido.getTiempoLimite()); // ¡Éxito!
+                avanzarEtapa(tarjeta, timerPedido, tiempo, pedido.getTiempoLimite(), total); // ¡Éxito!
             } else {
                 castigarBoton(tarjeta.getBtnSiguienteEtapa(), total); // ¡Se quemó, a esperar!
             }
         });
     }
 
-    private void avanzarEtapa(PanelPedidoCard tarjeta, Timer timerPedido, int[] tiempo, int tiempoLimite) {
+    private void avanzarEtapa(PanelPedidoCard tarjeta, Timer timerPedido, int[] tiempo, int tiempoLimite, int totalProducto) {
         int tiempoRestante = tiempo[0];
         Pedido pedido = tarjeta.getPedido();
         EnumPedido actual = pedido.getEstado();
@@ -297,13 +366,15 @@ public class JugadorController implements ActionListener {
 
             int puntosGanados = reglasJuego.getCompleto();
 
-            if (tiempoRestante >= (tiempoLimite - (tiempoLimite - 10))) {
+            if (tiempoRestante >= (tiempoLimite - (tiempoLimite - (10 * totalProducto)))) {
                 puntosGanados += reglasJuego.getCompleto_optimo();
+                vista.mostrarMensajeFlotante("El pedido se completo en un tiempo optimo, obtuviste un bonus de: "+reglasJuego.getCompleto_optimo()+" puntos");
             }
             if (tiempoRestante >= (tiempoLimite / 2)) {
                 puntosGanados += (int) (reglasJuego.getCompleto() * reglasJuego.getCompleto_eficiente());
+                vista.mostrarMensajeFlotante("El pedido se completo en un tiempo eficiente, obtuviste un bonus de: "+(int) (reglasJuego.getCompleto() * reglasJuego.getCompleto_eficiente())+" puntos");
             }
-
+            pedidosEntregados ++;
             finalizarPedido(tarjeta, puntosGanados);
         }
     }
@@ -339,7 +410,8 @@ public class JugadorController implements ActionListener {
         }
 
         Pedido pedido = tarjeta.getPedido();
-
+        pedido.setPuntajeObtenido(puntosAgregados);
+        pedido.setFechaEntrega(LocalDateTime.now());
         int nuevoPuntaje = partidaActual.getPuntaje() + puntosAgregados;
         if (nuevoPuntaje < 0) nuevoPuntaje = 0;
         partidaActual.setPuntaje(nuevoPuntaje);
@@ -350,7 +422,9 @@ public class JugadorController implements ActionListener {
                 partidaActual.setNivel(partidaActual.getNivel() + 1);
                 vista.mostrarMensajeFlotante("¡SUBISTE AL NIVEL " + partidaActual.getNivel() + "!");
                 nivel2 = partidaActual.getNivel() == 2;
+                if (nivel2) vista.mostrarMensajeFlotante("Ahora los productos van a tener "+reglasJuego.getDificultad_nivel()+" segundos menos de preparación.");
                 nivel3 = partidaActual.getNivel() == 3;
+                if (nivel3) vista.mostrarMensajeFlotante("Ahora los productos van a tener "+reglasJuego.getDificultad_nivel()*2+" segundos menos de preparación.");
             } else if (partidaActual.getNivel() == 3) {
                 vista.mostrarMensaje("¡Felicidades! Has superado el Nivel 3 y te has convertido en un Maestro Pizzero.", "¡Victoria!", JOptionPane.INFORMATION_MESSAGE);
                 terminarJuego();

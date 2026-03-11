@@ -28,14 +28,11 @@ public class LoginFrame extends JFrame {
         Font principal = new Font("Helvetica", Font.BOLD, 14);
         Font secundario = new Font("Helvetica", Font.PLAIN, 13);
 
-        // Título: Si le pones el ancho total (500) y SwingConstants.CENTER, se centra solo
         JLabel lblTitulo = new JLabel("PIZZA EXPRESS TYCOON", SwingConstants.CENTER);
         lblTitulo.setFont(titulo);
-        lblTitulo.setForeground(new Color(241, 196, 15)); // Amarillo pizza de contraste
+        lblTitulo.setForeground(new Color(241, 196, 15));
         lblTitulo.setBounds(0, 25, 500, 30);
         panel.add(lblTitulo);
-
-        // --- CAMPOS CENTRADOS (X = 100) ---
 
         JLabel lblEmail = new JLabel("Correo Electrónico:");
         lblEmail.setFont(principal);
@@ -45,9 +42,9 @@ public class LoginFrame extends JFrame {
 
         txtEmail = new JTextField();
         txtEmail.setFont(secundario);
-        txtEmail.setBackground(new Color(50, 50, 50)); // Fondo del input
-        txtEmail.setForeground(Color.WHITE); // Texto blanco
-        txtEmail.setCaretColor(Color.WHITE); // El cursor parpadeante en blanco
+        txtEmail.setBackground(new Color(50, 50, 50));
+        txtEmail.setForeground(Color.WHITE);
+        txtEmail.setCaretColor(Color.WHITE);
         txtEmail.setBorder(BorderFactory.createLineBorder(new Color(100, 100, 100)));
         txtEmail.setBounds(100, 100, 300, 35);
         panel.add(txtEmail);
@@ -70,11 +67,11 @@ public class LoginFrame extends JFrame {
         btnIngresar = new JButton("Ingresar al Sistema");
         btnIngresar.setBounds(150, 240, 200, 40);
         btnIngresar.setFont(principal);
-        btnIngresar.setBackground(new Color(231, 76, 60)); // Un rojo/naranja más acorde a una pizzería
+        btnIngresar.setBackground(new Color(231, 76, 60));
         btnIngresar.setForeground(Color.WHITE);
         btnIngresar.setFocusPainted(false);
-        btnIngresar.setBorder(BorderFactory.createEmptyBorder()); // Quita el borde 3D viejo
-        btnIngresar.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Manita al pasar el mouse
+        btnIngresar.setBorder(BorderFactory.createEmptyBorder());
+        btnIngresar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         panel.add(btnIngresar);
 
         this.add(panel);

@@ -5,6 +5,7 @@ import org.practica1.models.Partida;
 import org.practica1.models.ResumenPartida;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -110,24 +111,20 @@ public class PartidaDAO implements CRUD<Partida> {
         Connection connection = Conexion.getInstancia().getConnection();
 
         // SQL: Traemos la partida y contamos cuántos pedidos están enlazados a ella
-        String sql = "SELECT pa.partida_id, pa.fecha_inicio, pa.nivel, pa.puntaje, COUNT(pe.pedido_id) AS total_pedidos " +
-                "FROM partida pa " +
-                "LEFT JOIN pedido pe ON pa.partida_id = pe.partida_id " +
-                "WHERE pa.usuario_id = ? " +
-                "GROUP BY pa.partida_id, pa.fecha_inicio, pa.nivel, pa.puntaje " +
-                "ORDER BY pa.fecha_inicio DESC"; // Las más recientes primero
+        String sql = "SELECT pa.partida_id, pa.fecha_inicio, pa.fecha_fin, pa.nivel, pa.puntaje, COUNT(pe.pedido_id) AS total_pedidos FROM partida pa LEFT JOIN pedido pe ON pa.partida_id = pe.partida_id WHERE pa.usuario_id = ? GROUP BY pa.partida_id, pa.fecha_inicio, pa.nivel, pa.puntaje ORDER BY pa.fecha_inicio DESC;\n"; // Las más recientes primero
 
-        try (java.sql.PreparedStatement select = connection.prepareStatement(sql)) {
+        try (PreparedStatement select = connection.prepareStatement(sql)) {
             select.setInt(1, usuarioId);
             try (java.sql.ResultSet rs = select.executeQuery()) {
                 while (rs.next()) {
                     int partidaId = rs.getInt("partida_id");
-                    java.time.LocalDateTime fecha = rs.getTimestamp("fecha_inicio").toLocalDateTime();
+                    LocalDateTime fecha = rs.getTimestamp("fecha_inicio").toLocalDateTime();
+                    LocalDateTime fechaFin = rs.getTimestamp("fecha_fin") != null ? rs.getTimestamp("fecha_fin").toLocalDateTime() : null;
                     int nivel = rs.getInt("nivel");
                     int puntaje = rs.getInt("puntaje");
                     int totalPedidos = rs.getInt("total_pedidos");
 
-                    lista.add(new ResumenPartida(partidaId, fecha, nivel, puntaje, totalPedidos));
+                    lista.add(new ResumenPartida(partidaId, fecha, fechaFin,nivel, puntaje, totalPedidos));
                 }
             }
         }

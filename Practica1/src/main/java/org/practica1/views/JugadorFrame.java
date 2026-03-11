@@ -10,6 +10,7 @@ public class JugadorFrame extends JFrame {
     private JLabel lblPuntaje;
     private JButton btnIniciarPartida;
     private JButton btnTerminarTurno;
+    private JLabel lblTiempoGeneral;
 
     private JMenuItem itemCerrarSesion;
     private JMenuItem itemVerHistorial;
@@ -22,10 +23,9 @@ public class JugadorFrame extends JFrame {
 
     public JugadorFrame() {
         setTitle("Pizza Express Tycoon - Estación de Trabajo");
-        setSize(1000, 700);
+        setSize(1100, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setResizable(false);
         setLayout(null);
         getContentPane().setBackground(new Color(30, 30, 30));
 
@@ -35,39 +35,45 @@ public class JugadorFrame extends JFrame {
     private void inicializarComponentes() {
         JPanel panelHeader = new JPanel(null);
         panelHeader.setBackground(new Color(20, 20, 20));
-        panelHeader.setBounds(0, 0, 1000, 80);
+        panelHeader.setBounds(0, 0, 1100, 80);
         this.add(panelHeader);
 
         lblJugadorNombre = new JLabel("Cocinero: Esperando...");
         lblJugadorNombre.setFont(titulo);
         lblJugadorNombre.setForeground(new Color(241, 196, 15));
-        lblJugadorNombre.setBounds(20, 25, 300, 30);
+        lblJugadorNombre.setBounds(20, 25, 220, 30);
         panelHeader.add(lblJugadorNombre);
+
+        lblTiempoGeneral = new JLabel("Turno: 02:30");
+        lblTiempoGeneral.setFont(new Font("Arial", Font.BOLD, 22));
+        lblTiempoGeneral.setForeground(new Color(231, 76, 60));
+        lblTiempoGeneral.setBounds(250, 25, 150, 30);
+        panelHeader.add(lblTiempoGeneral);
 
         lblNivel = new JLabel("Nivel: 1");
         lblNivel.setFont(titulo);
         lblNivel.setForeground(Color.WHITE);
-        lblNivel.setBounds(350, 25, 100, 30);
+        lblNivel.setBounds(420, 25, 100, 30);
         panelHeader.add(lblNivel);
 
         lblPuntaje = new JLabel("Puntos: 0");
         lblPuntaje.setFont(titulo);
         lblPuntaje.setForeground(Color.WHITE);
-        lblPuntaje.setBounds(480, 25, 150, 30);
+        lblPuntaje.setBounds(540, 25, 110, 30);
         panelHeader.add(lblPuntaje);
 
-        btnIniciarPartida = new JButton("▶ INICIAR PARTIDA");
+        btnIniciarPartida = new JButton("INICIAR PARTIDA");
         btnIniciarPartida.setBackground(new Color(46, 204, 113));
         btnIniciarPartida.setForeground(Color.WHITE);
         btnIniciarPartida.setFont(principal);
-        btnIniciarPartida.setBounds(650, 20, 180, 40);
+        btnIniciarPartida.setBounds(660, 20, 170, 40);
         panelHeader.add(btnIniciarPartida);
 
-        btnTerminarTurno = new JButton("⏹ Terminar");
+        btnTerminarTurno = new JButton("Terminar");
         btnTerminarTurno.setBackground(new Color(231, 76, 60));
         btnTerminarTurno.setForeground(Color.WHITE);
         btnTerminarTurno.setFont(secundario);
-        btnTerminarTurno.setBounds(840, 20, 120, 40);
+        btnTerminarTurno.setBounds(840, 20, 130, 40);
         btnTerminarTurno.setEnabled(false);
         panelHeader.add(btnTerminarTurno);
 
@@ -77,7 +83,6 @@ public class JugadorFrame extends JFrame {
         JScrollPane scroll = new JScrollPane(panelContenedorPedidos);
         scroll.setBounds(20, 100, 945, 540);
         scroll.setBorder(BorderFactory.createEmptyBorder());
-
         scroll.getVerticalScrollBar().setUnitIncrement(16);
 
         JMenuBar menuBar = new JMenuBar();
@@ -93,7 +98,6 @@ public class JugadorFrame extends JFrame {
         menuBar.add(menuSistema);
 
         this.setJMenuBar(menuBar);
-
         this.add(scroll);
     }
 
@@ -111,6 +115,10 @@ public class JugadorFrame extends JFrame {
 
     public JLabel getLblJugadorNombre() {
         return lblJugadorNombre;
+    }
+
+    public JLabel getLblTiempoGeneral() {
+        return lblTiempoGeneral;
     }
 
     public JLabel getLblNivel() {

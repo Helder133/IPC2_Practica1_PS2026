@@ -86,10 +86,12 @@ public class LoginController implements ActionListener {
         SucursalDAO sucursalDAO = new SucursalDAO();
         UsuarioDAO usuarioDao = new UsuarioDAO();
         ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
+        ReportesDAO reportesDAO = new ReportesDAO();
 
         SucursalController sucursalController = new SucursalController(superAdminFrame, sucursalDAO);
         UsuarioController usuarioController = new UsuarioController(superAdminFrame, usuarioDao, sucursalDAO);
         ConfiguracionController configuracionController = new ConfiguracionController(superAdminFrame, configuracionDAO);
+        ReportesController reportesController = new ReportesController(superAdminFrame, reportesDAO);
 
         CerrarSesionController cerrarSesionController = new CerrarSesionController(superAdminFrame);
         return superAdminFrame;
@@ -103,12 +105,14 @@ public class LoginController implements ActionListener {
         ProductoIngredienteDAO productoIngredienteDAO = new ProductoIngredienteDAO();
         SucursalIngredienteDAO sucursalIngredienteDAO = new SucursalIngredienteDAO();
         SucursalProductoDAO sucursalProductoDAO = new SucursalProductoDAO();
+        ReportesDAO reportesDAO = new ReportesDAO();
 
         IngredienteController ingredienteController = new IngredienteController(adminTiendaFrame, ingredienteDAO);
         ProductoController productoController = new ProductoController(adminTiendaFrame, productoDAO, new ConfiguracionDAO());
         ProductoIngredienteController productoIngredienteController = new ProductoIngredienteController(adminTiendaFrame, productoIngredienteDAO, productoDAO, ingredienteDAO);
         SucursalIngredienteController sucursalIngredienteController = new SucursalIngredienteController(sucursalId, adminTiendaFrame, sucursalIngredienteDAO, ingredienteDAO);
         SucursalProductoController sucursalProductoController = new SucursalProductoController(sucursalId, adminTiendaFrame, sucursalProductoDAO, productoDAO);
+        ReportesController reportesController = new ReportesController(adminTiendaFrame, reportesDAO, sucursalId);
 
         CerrarSesionController cerrarSesionController = new CerrarSesionController(adminTiendaFrame);
         return adminTiendaFrame;

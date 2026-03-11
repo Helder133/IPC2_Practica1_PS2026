@@ -54,6 +54,9 @@ public class AdminTiendaFrame extends JFrame {
 
     private JMenuItem itemCerrarSesion;
 
+    private PanelReporteBase panelRanking;
+    private PanelReporteBase panelEstadisticas;
+
     private Font titulo = new Font("Arial", Font.BOLD, 18);
     private Font principal = new Font("Helvetica", Font.BOLD, 14);
     private Font secundario = new Font("Helvetica", Font.PLAIN, 13);
@@ -78,6 +81,12 @@ public class AdminTiendaFrame extends JFrame {
         tabbedPane.addTab("4. Menú Local", null, crearPanelMenuLocal(), "Pizzas de esta tienda");
         tabbedPane.addTab("5. Stock Local", null, crearPanelStockLocal(), "Ingredientes de esta tienda");
 
+        panelRanking = new PanelReporteBase("Ranking de Jugadores", new String[]{"Top Jugador", "Sucursal", "Nivel Máximo", "Puntaje Total"});
+        panelEstadisticas = new PanelReporteBase("Historial de Partidas", new String[]{"ID", "Jugador", "Sucursal", "Fecha Inicio", "Fecha Fin", "Nivel", "Puntos"});
+
+        tabbedPane.addTab("6. Ranking", panelRanking);
+        tabbedPane.addTab("7. Estadísticas", panelEstadisticas);
+
         this.add(tabbedPane);
         JMenuBar menuBar = new JMenuBar();
         JMenu menuCuenta = new JMenu("Cuenta");
@@ -91,6 +100,14 @@ public class AdminTiendaFrame extends JFrame {
 
     public JMenuItem getItemCerrarSesion() {
         return itemCerrarSesion;
+    }
+
+    public PanelReporteBase getPanelRanking() {
+        return panelRanking;
+    }
+
+    public PanelReporteBase getPanelEstadisticas() {
+        return panelEstadisticas;
     }
 
     // INGREDIENTES

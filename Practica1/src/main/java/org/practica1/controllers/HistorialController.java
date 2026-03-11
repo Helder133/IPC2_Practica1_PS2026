@@ -18,11 +18,7 @@ public class HistorialController {
         this.vista = vista;
         this.partidaDAO = partidaDAO;
         this.usuarioId = usuarioId;
-
-        // Evento para cerrar la ventana
         this.vista.getBtnCerrar().addActionListener(e -> vista.dispose());
-
-        // Llenar la tabla al instante
         cargarDatosEnTabla();
     }
 
@@ -37,6 +33,7 @@ public class HistorialController {
                 vista.getModeloTabla().addRow(new Object[]{
                         "#" + rp.getPartidaId(),
                         rp.getFechaInicio().format(formatter),
+                        rp.getFechaFin() != null ? rp.getFechaFin().format(formatter) : "---",
                         rp.getNivel(),
                         rp.getPuntaje() + " pts",
                         rp.getPedidosAtendidos()
