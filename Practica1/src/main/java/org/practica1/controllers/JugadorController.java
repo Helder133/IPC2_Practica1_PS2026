@@ -95,7 +95,7 @@ public class JugadorController implements ActionListener {
     private void abrirHistorial() {
         HistorialDialog dialog = new HistorialDialog(vista);
         new HistorialController(dialog, partidaDAO, jugador.getUsuario_id());
-        dialog.setVisible(true); // Se pausa aquí hasta que el jugador cierre el cuadro
+        dialog.setVisible(true);
     }
 
     private void iniciarJuego() {
@@ -422,9 +422,9 @@ public class JugadorController implements ActionListener {
                 partidaActual.setNivel(partidaActual.getNivel() + 1);
                 vista.mostrarMensajeFlotante("¡SUBISTE AL NIVEL " + partidaActual.getNivel() + "!");
                 nivel2 = partidaActual.getNivel() == 2;
-                if (nivel2) vista.mostrarMensajeFlotante("Ahora los productos van a tener "+reglasJuego.getDificultad_nivel()+" segundos menos de preparación.");
+                if (nivel2) vista.mostrarMensajeFlotante2("Ahora los productos van a tener "+reglasJuego.getDificultad_nivel()+" segundos menos de preparación.");
                 nivel3 = partidaActual.getNivel() == 3;
-                if (nivel3) vista.mostrarMensajeFlotante("Ahora los productos van a tener "+reglasJuego.getDificultad_nivel()*2+" segundos menos de preparación.");
+                if (nivel3) vista.mostrarMensajeFlotante2("Ahora los productos van a tener "+reglasJuego.getDificultad_nivel()*2+" segundos menos de preparación.");
             } else if (partidaActual.getNivel() == 3) {
                 vista.mostrarMensaje("¡Felicidades! Has superado el Nivel 3 y te has convertido en un Maestro Pizzero.", "¡Victoria!", JOptionPane.INFORMATION_MESSAGE);
                 terminarJuego();
@@ -443,7 +443,7 @@ public class JugadorController implements ActionListener {
 
             partidaDAO.actualizar(partidaActual);
         } catch (SQLException ex) {
-            System.err.println("Error al actualizar estado final en BD: " + ex.getMessage());
+            vista.mostrarMensaje("Error al actualizar estado final en BD: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -477,7 +477,7 @@ public class JugadorController implements ActionListener {
             hp.setEstado(nuevoEstado);
             historialDAO.insertar(hp);
         } catch (SQLException e) {
-            System.err.println("Error al guardar el historial del paso: " + e.getMessage());
+            vista.mostrarMensaje("Error al guardar el historial del paso: " + e.getMessage(), "Error Crítico", JOptionPane.ERROR_MESSAGE);
         }
     }
 

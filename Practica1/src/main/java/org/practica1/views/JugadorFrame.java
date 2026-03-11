@@ -160,10 +160,10 @@ public class JugadorFrame extends JFrame {
 
         JLabel lblToast = new JLabel(mensaje, SwingConstants.CENTER);
         lblToast.setOpaque(true);
-        lblToast.setBackground(new Color(46, 204, 113)); // Verde brillante
+        lblToast.setBackground(new Color(46, 204, 113));
         lblToast.setForeground(Color.WHITE);
         lblToast.setFont(principal);
-        lblToast.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20)); // Padding
+        lblToast.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
         toast.add(lblToast);
         toast.pack();
@@ -173,9 +173,36 @@ public class JugadorFrame extends JFrame {
 
         toast.setVisible(true);
 
-        Timer timerOcultar = new Timer(2000, e -> toast.dispose());
-        timerOcultar.setRepeats(false); // Para que solo se ejecute una vez
+        Timer timerOcultar = new Timer(3000, e -> toast.dispose());
+        timerOcultar.setRepeats(false);
         timerOcultar.start();
     }
+
+    public void mostrarMensajeFlotante2(String mensaje) {
+        JDialog toast = new JDialog(this, false);
+        toast.setUndecorated(true);
+        toast.setLayout(new BorderLayout());
+
+        JLabel lblToast = new JLabel(mensaje, SwingConstants.CENTER);
+        lblToast.setOpaque(true);
+        lblToast.setBackground(new Color(187, 150, 18));
+        lblToast.setForeground(Color.WHITE);
+        lblToast.setFont(principal);
+        lblToast.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+
+        toast.add(lblToast);
+        toast.pack();
+
+        toast.setLocationRelativeTo(this);
+        toast.setLocation(toast.getX(), toast.getY() + 200);
+
+        toast.setVisible(true);
+
+        Timer timerOcultar = new Timer(3000, e -> toast.dispose());
+        timerOcultar.setRepeats(false);
+        timerOcultar.start();
+    }
+
+
 
 }
